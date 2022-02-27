@@ -380,3 +380,41 @@ span[data-img-src]::after {
     width: var(--width);
     background-repeat: no-repeat;
 }
+
+.CodeMirror-code {
+    font-family: monospace;
+}
+
+.cm-s-easymde .cm-header-1 {
+    font-size: 150%;
+    line-height: 150%;
+}
+
+.talos-editor{
+  /*font-family: 'Annie',sans-serif;*/
+  font-family: 'Bellefair', serif;
+  font-weight: 500;
+  font-size: 150%;
+}
+
+.EasyMDEContainer .CodeMirror {
+  font-size: 1.2em;
+  padding: 0;
+}
+
+.cm-s-easymde .cm-link {
+    color: #006600;
+    font-weight: bold;
+}
+
+.cm-s-easymde .cm-url {
+    color: #292;
+}
+
+
+.cm-s-easymde .cm-comment {
+    background: rgba(0,0,0,.05);
+    border-radius: 5px;
+    font-style: italic;
+    color: gray;
+}

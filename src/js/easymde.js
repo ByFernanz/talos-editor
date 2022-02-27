@@ -2571,6 +2571,7 @@ EasyMDE.prototype.createToolbar = function (items) {
 
     var bar = document.createElement('div');
     bar.className = 'editor-toolbar';
+    bar.innerHTML = '<span class="talos-editor">Talos Editor </span><i class="separator">|</i>';
 
     var self = this;
 

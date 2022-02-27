@@ -1,0 +1,628 @@
+<h1 id="easymde---markdown-editor">EasyMDE - Markdown Editor</h1>
+<p><a href="https://www.npmjs.com/package/easymde"><img src="https://img.shields.io/npm/v/easymde.svg?style=for-the-badge" alt="npm version" /></a> <a href="https://www.npmjs.com/package/easymde/v/next"><img src="https://img.shields.io/npm/v/easymde/next.svg?style=for-the-badge" alt="npm version" /></a> <a href="https://github.com/Ionaru/easy-markdown-editor/actions"><img src="https://img.shields.io/github/workflow/status/ionaru/easy-markdown-editor/Test%20&amp;%20Deploy/master?style=for-the-badge" alt="Build Status" /></a></p>
+<blockquote>
+<p>This repository is a fork of <a href="https://github.com/sparksuite/simplemde-markdown-editor/">SimpleMDE, made by Sparksuite</a>. Go to the <a href="#simplemde-fork">dedicated section</a> for more information.</p>
+</blockquote>
+<p>A drop-in JavaScript text area replacement for writing beautiful and understandable Markdown. EasyMDE allows users who may be less experienced with Markdown to use familiar toolbar buttons and shortcuts.</p>
+<p>In addition, the syntax is rendered while editing to clearly show the expected result. Headings are larger, emphasized words are italicized, links are underlined, etc.</p>
+<p>EasyMDE also features both built-in auto saving and spell checking. The editor is entirely customizable, from theming to toolbar buttons and javascript hooks.</p>
+<p><a href="https://easy-markdown-editor.tk/"><strong>Try the demo</strong></a></p>
+<p><a href="https://easy-markdown-editor.tk/"><img src="https://user-images.githubusercontent.com/3472373/51319377-26fe6e00-1a5d-11e9-8cc6-3137a566796d.png" alt="Preview" /></a></p>
+<h2 id="quick-access">Quick access</h2>
+<ul>
+<li><a href="#easymde---markdown-editor">EasyMDE - Markdown Editor</a>
+<ul>
+<li><a href="#quick-access">Quick access</a></li>
+<li><a href="#install-easymde">Install EasyMDE</a></li>
+<li><a href="#how-to-use">How to use</a>
+<ul>
+<li><a href="#loading-the-editor">Loading the editor</a></li>
+<li><a href="#editor-functions">Editor functions</a></li>
+</ul></li>
+<li><a href="#configuration">Configuration</a>
+<ul>
+<li><a href="#options-list">Options list</a></li>
+<li><a href="#options-example">Options example</a></li>
+<li><a href="#toolbar-icons">Toolbar icons</a></li>
+<li><a href="#toolbar-customization">Toolbar customization</a></li>
+<li><a href="#keyboard-shortcuts">Keyboard shortcuts</a></li>
+</ul></li>
+<li><a href="#advanced-use">Advanced use</a>
+<ul>
+<li><a href="#event-handling">Event handling</a></li>
+<li><a href="#removing-easymde-from-text-area">Removing EasyMDE from text area</a></li>
+<li><a href="#useful-methods">Useful methods</a></li>
+</ul></li>
+<li><a href="#how-it-works">How it works</a></li>
+<li><a href="#simplemde-fork">SimpleMDE fork</a></li>
+<li><a href="#hacking-easymde">Hacking EasyMDE</a></li>
+<li><a href="#contributing">Contributing</a></li>
+<li><a href="#license">License</a></li>
+</ul></li>
+</ul>
+<h2 id="install-easymde">Install EasyMDE</h2>
+<p>Via <a href="https://www.npmjs.com/package/easymde">npm</a>:</p>
+<pre><code>npm install easymde</code></pre>
+<p>Via the <em>UNPKG</em> CDN:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;link</span> <span class="er">rel</span><span class="ot">=</span><span class="st">&quot;stylesheet&quot;</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;https://unpkg.com/easymde/dist/easymde.min.css&quot;</span><span class="kw">&gt;</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;script</span> <span class="er">src</span><span class="ot">=</span><span class="st">&quot;https://unpkg.com/easymde/dist/easymde.min.js&quot;</span><span class="kw">&gt;&lt;/script&gt;</span></span></code></pre></div>
+<p>Or <em>jsDelivr</em>:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;link</span> <span class="er">rel</span><span class="ot">=</span><span class="st">&quot;stylesheet&quot;</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css&quot;</span><span class="kw">&gt;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;script</span> <span class="er">src</span><span class="ot">=</span><span class="st">&quot;https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js&quot;</span><span class="kw">&gt;&lt;/script&gt;</span></span></code></pre></div>
+<h2 id="how-to-use">How to use</h2>
+<h3 id="loading-the-editor">Loading the editor</h3>
+<p>After installing and/or importing the module, you can load EasyMDE onto the first TextArea on the web page:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;textarea&gt;&lt;/textarea&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;script&gt;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> easyMDE <span class="op">=</span> <span class="kw">new</span> <span class="fu">EasyMDE</span>()<span class="op">;</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/script&gt;</span></span></code></pre></div>
+<p>Alternatively you can select a specific TextArea, via Javascript:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;textarea</span> <span class="er">id</span><span class="ot">=</span><span class="st">&quot;my-text-area&quot;</span><span class="kw">&gt;&lt;/textarea&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;script&gt;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> easyMDE <span class="op">=</span> <span class="kw">new</span> <span class="fu">EasyMDE</span>({<span class="dt">element</span><span class="op">:</span> <span class="bu">document</span><span class="op">.</span><span class="fu">getElementById</span>(<span class="st">&#39;my-text-area&#39;</span>)})<span class="op">;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/script&gt;</span></span></code></pre></div>
+<p>Or via jQuery:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;textarea</span> <span class="er">id</span><span class="ot">=</span><span class="st">&quot;my-text-area&quot;</span><span class="kw">&gt;&lt;/textarea&gt;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;script&gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> easyMDE <span class="op">=</span> <span class="kw">new</span> <span class="fu">EasyMDE</span>({<span class="dt">element</span><span class="op">:</span> <span class="fu">$</span>(<span class="st">&#39;#my-text-area&#39;</span>)[<span class="dv">0</span>]})<span class="op">;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/script&gt;</span></span></code></pre></div>
+<h3 id="editor-functions">Editor functions</h3>
+<p>Use EasyMDE.value() to get the content of the editor:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;script&gt;</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>easyMDE<span class="op">.</span><span class="fu">value</span>()<span class="op">;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/script&gt;</span></span></code></pre></div>
+<p>Use EasyMDE.value(val) to set the content of the editor:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;script&gt;</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>easyMDE<span class="op">.</span><span class="fu">value</span>(<span class="st">&#39;New input for **EasyMDE**&#39;</span>)<span class="op">;</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;/script&gt;</span></span></code></pre></div>
+<h2 id="configuration">Configuration</h2>
+<h3 id="options-list">Options list</h3>
+<ul>
+<li><strong>autoDownloadFontAwesome</strong>: If set to <code>true</code>, force downloads Font Awesome (used for icons). If set to <code>false</code>, prevents downloading. Defaults to <code>undefined</code>, which will intelligently check whether Font Awesome has already been included, then download accordingly.</li>
+<li><strong>autofocus</strong>: If set to <code>true</code>, focuses the editor automatically. Defaults to <code>false</code>.</li>
+<li><strong>autosave</strong>: <em>Saves the text that’s being written and will load it back in the future. It will forget the text when the form it’s contained in is submitted.</em>
+<ul>
+<li><strong>enabled</strong>: If set to <code>true</code>, saves the text automatically. Defaults to <code>false</code>.</li>
+<li><strong>delay</strong>: Delay between saves, in milliseconds. Defaults to <code>10000</code> (10s).</li>
+<li><strong>submit_delay</strong>: Delay before assuming that submit of the form failed and saving the text, in milliseconds. Defaults to <code>autosave.delay</code> or <code>10000</code> (10s).</li>
+<li><strong>uniqueId</strong>: You must set a unique string identifier so that EasyMDE can autosave. Something that separates this from other instances of EasyMDE elsewhere on your website.</li>
+<li><strong>timeFormat</strong>: Set DateTimeFormat. More information see <a href="https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat">DateTimeFormat instances</a>. Default <code>locale: en-US, format: hour:minute</code>.</li>
+<li><strong>text</strong>: Set text for autosave.</li>
+</ul></li>
+<li><strong>autoRefresh</strong>: Useful, when initializing the editor in a hidden DOM node. If set to <code>{ delay: 300 }</code>, it will check every 300 ms if the editor is visible and if positive, call CodeMirror’s <a href="https://codemirror.net/doc/manual.html#refresh"><code>refresh()</code></a>.</li>
+<li><strong>blockStyles</strong>: Customize how certain buttons that style blocks of text behave.
+<ul>
+<li><strong>bold</strong>: Can be set to <code>**</code> or <code>__</code>. Defaults to <code>**</code>.</li>
+<li><strong>code</strong>: Can be set to <code>```</code> or <code>~~~</code>. Defaults to <code>```</code>.</li>
+<li><strong>italic</strong>: Can be set to <code>*</code> or <code>_</code>. Defaults to <code>*</code>.</li>
+</ul></li>
+<li><strong>unorderedListStyle</strong>: can be <code>*</code>, <code>-</code> or <code>+</code>. Defaults to <code>*</code>.</li>
+<li><strong>scrollbarStyle</strong>: Chooses a scrollbar implementation. The default is “native”, showing native scrollbars. The core library also provides the “null” style, which completely hides the scrollbars. Addons can implement additional scrollbar models.</li>
+<li><strong>element</strong>: The DOM element for the TextArea to use. Defaults to the first TextArea on the page.</li>
+<li><strong>forceSync</strong>: If set to <code>true</code>, force text changes made in EasyMDE to be immediately stored in original text area. Defaults to <code>false</code>.</li>
+<li><strong>hideIcons</strong>: An array of icon names to hide. Can be used to hide specific icons shown by default without completely customizing the toolbar.</li>
+<li><strong>indentWithTabs</strong>: If set to <code>false</code>, indent using spaces instead of tabs. Defaults to <code>true</code>.</li>
+<li><strong>initialValue</strong>: If set, will customize the initial value of the editor.</li>
+<li><strong>previewImagesInEditor</strong>: - EasyMDE will show preview of images, <code>false</code> by default, preview for images will appear only for images on separate lines.</li>
+<li><strong>insertTexts</strong>: Customize how certain buttons that insert text behave. Takes an array with two elements. The first element will be the text inserted before the cursor or highlight, and the second element will be inserted after. For example, this is the default link value: <code>["[", "](http://)"]</code>.
+<ul>
+<li>horizontalRule</li>
+<li>image</li>
+<li>link</li>
+<li>table</li>
+</ul></li>
+<li><strong>lineNumbers</strong>: If set to <code>true</code>, enables line numbers in the editor.</li>
+<li><strong>lineWrapping</strong>: If set to <code>false</code>, disable line wrapping. Defaults to <code>true</code>.</li>
+<li><strong>minHeight</strong>: Sets the minimum height for the composition area, before it starts auto-growing. Should be a string containing a valid CSS value like <code>"500px"</code>. Defaults to <code>"300px"</code>.</li>
+<li><strong>maxHeight</strong>: Sets fixed height for the composition area. <code>minHeight</code> option will be ignored. Should be a string containing a valid CSS value like <code>"500px"</code>. Defaults to <code>undefined</code>.</li>
+<li><strong>onToggleFullScreen</strong>: A function that gets called when the editor’s full screen mode is toggled. The function will be passed a boolean as parameter, <code>true</code> when the editor is currently going into full screen mode, or <code>false</code>.</li>
+<li><strong>parsingConfig</strong>: Adjust settings for parsing the Markdown during editing (not previewing).
+<ul>
+<li><strong>allowAtxHeaderWithoutSpace</strong>: If set to <code>true</code>, will render headers without a space after the <code>#</code>. Defaults to <code>false</code>.</li>
+<li><strong>strikethrough</strong>: If set to <code>false</code>, will not process GFM strikethrough syntax. Defaults to <code>true</code>.</li>
+<li><strong>underscoresBreakWords</strong>: If set to <code>true</code>, let underscores be a delimiter for separating words. Defaults to <code>false</code>.</li>
+</ul></li>
+<li><strong>overlayMode</strong>: Pass a custom codemirror <a href="https://codemirror.net/doc/manual.html#modeapi">overlay mode</a> to parse and style the Markdown during editing.
+<ul>
+<li><strong>mode</strong>: A codemirror mode object.</li>
+<li><strong>combine</strong>: If set to <code>false</code>, will <em>replace</em> CSS classes returned by the default Markdown mode. Otherwise the classes returned by the custom mode will be combined with the classes returned by the default mode. Defaults to <code>true</code>.</li>
+</ul></li>
+<li><strong>placeholder</strong>: If set, displays a custom placeholder message.</li>
+<li><strong>previewClass</strong>: A string or array of strings that will be applied to the preview screen when activated. Defaults to <code>"editor-preview"</code>.</li>
+<li><strong>previewRender</strong>: Custom function for parsing the plaintext Markdown and returning HTML. Used when user previews.</li>
+<li><strong>promptURLs</strong>: If set to <code>true</code>, a JS alert window appears asking for the link or image URL. Defaults to <code>false</code>.</li>
+<li><strong>promptTexts</strong>: Customize the text used to prompt for URLs.
+<ul>
+<li><strong>image</strong>: The text to use when prompting for an image’s URL. Defaults to <code>URL of the image:</code>.</li>
+<li><strong>link</strong>: The text to use when prompting for a link’s URL. Defaults to <code>URL for the link:</code>.</li>
+</ul></li>
+<li><strong>uploadImage</strong>: If set to <code>true</code>, enables the image upload functionality, which can be triggered by drag&amp;drop, copy-paste and through the browse-file window (opened when the user click on the <em>upload-image</em> icon). Defaults to <code>false</code>.</li>
+<li><strong>imageMaxSize</strong>: Maximum image size in bytes, checked before upload (note: never trust client, always check image size at server-side). Defaults to <code>1024*1024*2</code> (2Mb).</li>
+<li><strong>imageAccept</strong>: A comma-separated list of mime-types used to check image type before upload (note: never trust client, always check file types at server-side). Defaults to <code>image/png, image/jpeg</code>.</li>
+<li><strong>imageUploadFunction</strong>: A custom function for handling the image upload. Using this function will render the options <code>imageMaxSize</code>, <code>imageAccept</code>, <code>imageUploadEndpoint</code> and <code>imageCSRFToken</code> ineffective.
+<ul>
+<li>The function gets a file and onSuccess and onError callback functions as parameters. <code>onSuccess(imageUrl: string)</code> and <code>onError(errorMessage: string)</code></li>
+</ul></li>
+<li><strong>imageUploadEndpoint</strong>: The endpoint where the images data will be sent, via an asynchronous <em>POST</em> request. The server is supposed to save this image, and return a json response.
+<ul>
+<li>if the request was successfully processed (HTTP 200-OK): <code>{"data": {"filePath": "&lt;filePath&gt;"}}</code> where <em>filePath</em> is the path of the image (absolute if <code>imagePathAbsolute</code> is set to true, relative if otherwise);</li>
+<li>otherwise: <code>{"error": "&lt;errorCode&gt;"}</code>, where <em>errorCode</em> can be <code>noFileGiven</code> (HTTP 400), <code>typeNotAllowed</code> (HTTP 415), <code>fileTooLarge</code> (HTTP 413) or <code>importError</code> (see <em>errorMessages</em> below). If <em>errorCode</em> is not one of the <em>errorMessages</em>, it is alerted unchanged to the user. This allows for server side error messages. No default value.</li>
+</ul></li>
+<li><strong>imagePathAbsolute</strong>: If set to <code>true</code>, will treat <code>imageUrl</code> from <code>imageUploadFunction</code> and <em>filePath</em> returned from <code>imageUploadEndpoint</code> as an absolute rather than relative path, i.e. not prepend <code>window.location.origin</code> to it.</li>
+<li><strong>imageCSRFToken</strong>: CSRF token to include with AJAX call to upload image. For various instances like Django, Spring and Laravel.</li>
+<li><strong>imageCSRFName</strong>: CSRF token filed name to include with AJAX call to upload image, applied when <code>imageCSRFToken</code> has value, defaults to <code>csrfmiddlewaretoken</code>.</li>
+<li><strong>imageCSRFHeader</strong>: If set to <code>true</code>, passing CSRF token via header. Defaults to <code>false</code>, which pass CSRF through request body.</li>
+<li><strong>imageTexts</strong>: Texts displayed to the user (mainly on the status bar) for the import image feature, where <code>#image_name#</code>, <code>#image_size#</code> and <code>#image_max_size#</code> will replaced by their respective values, that can be used for customization or internationalization:
+<ul>
+<li><strong>sbInit</strong>: Status message displayed initially if <code>uploadImage</code> is set to <code>true</code>. Defaults to <code>Attach files by drag and dropping or pasting from clipboard.</code>.</li>
+<li><strong>sbOnDragEnter</strong>: Status message displayed when the user drags a file to the text area. Defaults to <code>Drop image to upload it.</code>.</li>
+<li><strong>sbOnDrop</strong>: Status message displayed when the user drops a file in the text area. Defaults to <code>Uploading images #images_names#</code>.</li>
+<li><strong>sbProgress</strong>: Status message displayed to show uploading progress. Defaults to <code>Uploading #file_name#: #progress#%</code>.</li>
+<li><strong>sbOnUploaded</strong>: Status message displayed when the image has been uploaded. Defaults to <code>Uploaded #image_name#</code>.</li>
+<li><strong>sizeUnits</strong>: A comma-separated list of units used to display messages with human-readable file sizes. Defaults to <code>B, KB, MB</code> (example: <code>218 KB</code>). You can use <code>B,KB,MB</code> instead if you prefer without whitespaces (<code>218KB</code>).</li>
+</ul></li>
+<li><strong>errorMessages</strong>: Errors displayed to the user, using the <code>errorCallback</code> option, where <code>#image_name#</code>, <code>#image_size#</code> and <code>#image_max_size#</code> will replaced by their respective values, that can be used for customization or internationalization:
+<ul>
+<li><strong>noFileGiven</strong>: The server did not receive any file from the user. Defaults to <code>You must select a file.</code>.</li>
+<li><strong>typeNotAllowed</strong>: The user send a file type which doesn’t match the <code>imageAccept</code> list, or the server returned this error code. Defaults to <code>This image type is not allowed.</code>.</li>
+<li><strong>fileTooLarge</strong>: The size of the image being imported is bigger than the <code>imageMaxSize</code>, or if the server returned this error code. Defaults to <code>Image #image_name# is too big (#image_size#).\nMaximum file size is #image_max_size#.</code>.</li>
+<li><strong>importError</strong>: An unexpected error occurred when uploading the image. Defaults to <code>Something went wrong when uploading the image #image_name#.</code>.</li>
+</ul></li>
+<li><strong>errorCallback</strong>: A callback function used to define how to display an error message. Defaults to <code>(errorMessage) =&gt; alert(errorMessage)</code>.</li>
+<li><strong>renderingConfig</strong>: Adjust settings for parsing the Markdown during previewing (not editing).
+<ul>
+<li><strong>codeSyntaxHighlighting</strong>: If set to <code>true</code>, will highlight using <a href="https://github.com/isagalaev/highlight.js">highlight.js</a>. Defaults to <code>false</code>. To use this feature you must include highlight.js on your page or pass in using the <code>hljs</code> option. For example, include the script and the CSS files like:<br><code>&lt;script src="https://cdn.jsdelivr.net/highlight.js/latest/highlight.min.js"&gt;&lt;/script&gt;</code><br><code>&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/highlight.js/latest/styles/github.min.css"&gt;</code></li>
+<li><strong>hljs</strong>: An injectible instance of <a href="https://github.com/isagalaev/highlight.js">highlight.js</a>. If you don’t want to rely on the global namespace (<code>window.hljs</code>), you can provide an instance here. Defaults to <code>undefined</code>.</li>
+<li><strong>markedOptions</strong>: Set the internal Markdown renderer’s <a href="https://marked.js.org/#/USING_ADVANCED.md#options">options</a>. Other <code>renderingConfig</code> options will take precedence.</li>
+<li><strong>singleLineBreaks</strong>: If set to <code>false</code>, disable parsing GFM single line breaks. Defaults to <code>true</code>.</li>
+<li><strong>sanitizerFunction</strong>: Custom function for sanitizing the HTML output of markdown renderer.</li>
+</ul></li>
+<li><strong>shortcuts</strong>: Keyboard shortcuts associated with this instance. Defaults to the <a href="#keyboard-shortcuts">array of shortcuts</a>.</li>
+<li><strong>showIcons</strong>: An array of icon names to show. Can be used to show specific icons hidden by default without completely customizing the toolbar.</li>
+<li><strong>spellChecker</strong>: If set to <code>false</code>, disable the spell checker. Defaults to <code>true</code>. Optionally pass a CodeMirrorSpellChecker-compliant function.</li>
+<li><strong>inputStyle</strong>: <code>textarea</code> or <code>contenteditable</code>. Defaults to <code>textarea</code> for desktop and <code>contenteditable</code> for mobile. <code>contenteditable</code> option is necessary to enable nativeSpellcheck.</li>
+<li><strong>nativeSpellcheck</strong>: If set to <code>false</code>, disable native spell checker. Defaults to <code>true</code>.</li>
+<li><strong>sideBySideFullscreen</strong>: If set to <code>false</code>, allows side-by-side editing without going into fullscreen. Defaults to <code>true</code>.</li>
+<li><strong>status</strong>: If set to <code>false</code>, hide the status bar. Defaults to the array of built-in status bar items.
+<ul>
+<li>Optionally, you can set an array of status bar items to include, and in what order. You can even define your own custom status bar items.</li>
+</ul></li>
+<li><strong>styleSelectedText</strong>: If set to <code>false</code>, remove the <code>CodeMirror-selectedtext</code> class from selected lines. Defaults to <code>true</code>.</li>
+<li><strong>syncSideBySidePreviewScroll</strong>: If set to <code>false</code>, disable syncing scroll in side by side mode. Defaults to <code>true</code>.</li>
+<li><strong>tabSize</strong>: If set, customize the tab size. Defaults to <code>2</code>.</li>
+<li><strong>theme</strong>: Override the theme. Defaults to <code>easymde</code>.</li>
+<li><strong>toolbar</strong>: If set to <code>false</code>, hide the toolbar. Defaults to the <a href="#toolbar-icons">array of icons</a>.</li>
+<li><strong>toolbarTips</strong>: If set to <code>false</code>, disable toolbar button tips. Defaults to <code>true</code>.</li>
+<li><strong>direction</strong>: <code>rtl</code> or <code>ltr</code>. Changes text direction to support right-to-left languages. Defaults to <code>ltr</code>.</li>
+</ul>
+<h3 id="options-example">Options example</h3>
+<p>Most options demonstrate the non-default behavior:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> editor <span class="op">=</span> <span class="kw">new</span> <span class="fu">EasyMDE</span>({</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">autofocus</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">autosave</span><span class="op">:</span> {</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>        <span class="dt">enabled</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>        <span class="dt">uniqueId</span><span class="op">:</span> <span class="st">&quot;MyUniqueID&quot;</span><span class="op">,</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>        <span class="dt">delay</span><span class="op">:</span> <span class="dv">1000</span><span class="op">,</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>        <span class="dt">submit_delay</span><span class="op">:</span> <span class="dv">5000</span><span class="op">,</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>        <span class="dt">timeFormat</span><span class="op">:</span> {</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>            <span class="dt">locale</span><span class="op">:</span> <span class="st">&#39;en-US&#39;</span><span class="op">,</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>            <span class="dt">format</span><span class="op">:</span> {</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>                <span class="dt">year</span><span class="op">:</span> <span class="st">&#39;numeric&#39;</span><span class="op">,</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>                <span class="dt">month</span><span class="op">:</span> <span class="st">&#39;long&#39;</span><span class="op">,</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>                <span class="dt">day</span><span class="op">:</span> <span class="st">&#39;2-digit&#39;</span><span class="op">,</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>                <span class="dt">hour</span><span class="op">:</span> <span class="st">&#39;2-digit&#39;</span><span class="op">,</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>                <span class="dt">minute</span><span class="op">:</span> <span class="st">&#39;2-digit&#39;</span><span class="op">,</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>            }<span class="op">,</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>        }<span class="op">,</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>        <span class="dt">text</span><span class="op">:</span> <span class="st">&quot;Autosaved: &quot;</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    <span class="dt">blockStyles</span><span class="op">:</span> {</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>        <span class="dt">bold</span><span class="op">:</span> <span class="st">&quot;__&quot;</span><span class="op">,</span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>        <span class="dt">italic</span><span class="op">:</span> <span class="st">&quot;_&quot;</span><span class="op">,</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>    <span class="dt">unorderedListStyle</span><span class="op">:</span> <span class="st">&quot;-&quot;</span><span class="op">,</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>    <span class="dt">element</span><span class="op">:</span> <span class="bu">document</span><span class="op">.</span><span class="fu">getElementById</span>(<span class="st">&quot;MyID&quot;</span>)<span class="op">,</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>    <span class="dt">forceSync</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>    <span class="dt">hideIcons</span><span class="op">:</span> [<span class="st">&quot;guide&quot;</span><span class="op">,</span> <span class="st">&quot;heading&quot;</span>]<span class="op">,</span></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>    <span class="dt">indentWithTabs</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>    <span class="dt">initialValue</span><span class="op">:</span> <span class="st">&quot;Hello world!&quot;</span><span class="op">,</span></span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>    <span class="dt">insertTexts</span><span class="op">:</span> {</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>        <span class="dt">horizontalRule</span><span class="op">:</span> [<span class="st">&quot;&quot;</span><span class="op">,</span> <span class="st">&quot;</span><span class="sc">\n\n</span><span class="st">-----</span><span class="sc">\n\n</span><span class="st">&quot;</span>]<span class="op">,</span></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>        <span class="dt">image</span><span class="op">:</span> [<span class="st">&quot;![](http://&quot;</span><span class="op">,</span> <span class="st">&quot;)&quot;</span>]<span class="op">,</span></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>        <span class="dt">link</span><span class="op">:</span> [<span class="st">&quot;[&quot;</span><span class="op">,</span> <span class="st">&quot;](https://)&quot;</span>]<span class="op">,</span></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>        <span class="dt">table</span><span class="op">:</span> [<span class="st">&quot;&quot;</span><span class="op">,</span> <span class="st">&quot;</span><span class="sc">\n\n</span><span class="st">| Column 1 | Column 2 | Column 3 |</span><span class="sc">\n</span><span class="st">| -------- | -------- | -------- |</span><span class="sc">\n</span><span class="st">| Text     | Text      | Text     |</span><span class="sc">\n\n</span><span class="st">&quot;</span>]<span class="op">,</span></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>    <span class="dt">lineWrapping</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>    <span class="dt">minHeight</span><span class="op">:</span> <span class="st">&quot;500px&quot;</span><span class="op">,</span></span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>    <span class="dt">parsingConfig</span><span class="op">:</span> {</span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>        <span class="dt">allowAtxHeaderWithoutSpace</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>        <span class="dt">strikethrough</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>        <span class="dt">underscoresBreakWords</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>    <span class="dt">placeholder</span><span class="op">:</span> <span class="st">&quot;Type here...&quot;</span><span class="op">,</span></span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>    <span class="dt">previewClass</span><span class="op">:</span> <span class="st">&quot;my-custom-styling&quot;</span><span class="op">,</span></span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>    <span class="dt">previewClass</span><span class="op">:</span> [<span class="st">&quot;my-custom-styling&quot;</span><span class="op">,</span> <span class="st">&quot;more-custom-styling&quot;</span>]<span class="op">,</span></span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>    <span class="dt">previewRender</span><span class="op">:</span> (plainText) <span class="kw">=&gt;</span> <span class="fu">customMarkdownParser</span>(plainText)<span class="op">,</span> <span class="co">// Returns HTML from a custom parser</span></span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>    <span class="dt">previewRender</span><span class="op">:</span> (plainText<span class="op">,</span> preview) <span class="kw">=&gt;</span> { <span class="co">// Async method</span></span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>        <span class="pp">setTimeout</span>(() <span class="kw">=&gt;</span> {</span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a>            preview<span class="op">.</span><span class="at">innerHTML</span> <span class="op">=</span> <span class="fu">customMarkdownParser</span>(plainText)<span class="op">;</span></span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a>        }<span class="op">,</span> <span class="dv">250</span>)<span class="op">;</span></span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">&quot;Loading...&quot;</span><span class="op">;</span></span>
+<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+<span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a>    <span class="dt">promptURLs</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a>    <span class="dt">promptTexts</span><span class="op">:</span> {</span>
+<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a>        <span class="dt">image</span><span class="op">:</span> <span class="st">&quot;Custom prompt for URL:&quot;</span><span class="op">,</span></span>
+<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a>        <span class="dt">link</span><span class="op">:</span> <span class="st">&quot;Custom prompt for URL:&quot;</span><span class="op">,</span></span>
+<span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a>    <span class="dt">renderingConfig</span><span class="op">:</span> {</span>
+<span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a>        <span class="dt">singleLineBreaks</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+<span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a>        <span class="dt">codeSyntaxHighlighting</span><span class="op">:</span> <span class="kw">true</span><span class="op">,</span></span>
+<span id="cb9-64"><a href="#cb9-64" aria-hidden="true" tabindex="-1"></a>        <span class="dt">sanitizerFunction</span><span class="op">:</span> (renderedHTML) <span class="kw">=&gt;</span> {</span>
+<span id="cb9-65"><a href="#cb9-65" aria-hidden="true" tabindex="-1"></a>            <span class="co">// Using DOMPurify and only allowing &lt;b&gt; tags</span></span>
+<span id="cb9-66"><a href="#cb9-66" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> DOMPurify<span class="op">.</span><span class="fu">sanitize</span>(renderedHTML<span class="op">,</span> {<span class="dt">ALLOWED_TAGS</span><span class="op">:</span> [<span class="st">&#39;b&#39;</span>]})</span>
+<span id="cb9-67"><a href="#cb9-67" aria-hidden="true" tabindex="-1"></a>        }<span class="op">,</span></span>
+<span id="cb9-68"><a href="#cb9-68" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+<span id="cb9-69"><a href="#cb9-69" aria-hidden="true" tabindex="-1"></a>    <span class="dt">shortcuts</span><span class="op">:</span> {</span>
+<span id="cb9-70"><a href="#cb9-70" aria-hidden="true" tabindex="-1"></a>        <span class="dt">drawTable</span><span class="op">:</span> <span class="st">&quot;Cmd-Alt-T&quot;</span></span>
+<span id="cb9-71"><a href="#cb9-71" aria-hidden="true" tabindex="-1"></a>    }<span class="op">,</span></span>
+<span id="cb9-72"><a href="#cb9-72" aria-hidden="true" tabindex="-1"></a>    <span class="dt">showIcons</span><span class="op">:</span> [<span class="st">&quot;code&quot;</span><span class="op">,</span> <span class="st">&quot;table&quot;</span>]<span class="op">,</span></span>
+<span id="cb9-73"><a href="#cb9-73" aria-hidden="true" tabindex="-1"></a>    <span class="dt">spellChecker</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+<span id="cb9-74"><a href="#cb9-74" aria-hidden="true" tabindex="-1"></a>    <span class="dt">status</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+<span id="cb9-75"><a href="#cb9-75" aria-hidden="true" tabindex="-1"></a>    <span class="dt">status</span><span class="op">:</span> [<span class="st">&quot;autosave&quot;</span><span class="op">,</span> <span class="st">&quot;lines&quot;</span><span class="op">,</span> <span class="st">&quot;words&quot;</span><span class="op">,</span> <span class="st">&quot;cursor&quot;</span>]<span class="op">,</span> <span class="co">// Optional usage</span></span>
+<span id="cb9-76"><a href="#cb9-76" aria-hidden="true" tabindex="-1"></a>    <span class="dt">status</span><span class="op">:</span> [<span class="st">&quot;autosave&quot;</span><span class="op">,</span> <span class="st">&quot;lines&quot;</span><span class="op">,</span> <span class="st">&quot;words&quot;</span><span class="op">,</span> <span class="st">&quot;cursor&quot;</span><span class="op">,</span> {</span>
+<span id="cb9-77"><a href="#cb9-77" aria-hidden="true" tabindex="-1"></a>        <span class="dt">className</span><span class="op">:</span> <span class="st">&quot;keystrokes&quot;</span><span class="op">,</span></span>
+<span id="cb9-78"><a href="#cb9-78" aria-hidden="true" tabindex="-1"></a>        <span class="dt">defaultValue</span><span class="op">:</span> (el) <span class="kw">=&gt;</span> {</span>
+<span id="cb9-79"><a href="#cb9-79" aria-hidden="true" tabindex="-1"></a>            el<span class="op">.</span><span class="fu">setAttribute</span>(<span class="st">&#39;data-keystrokes&#39;</span><span class="op">,</span> <span class="dv">0</span>)<span class="op">;</span></span>
+<span id="cb9-80"><a href="#cb9-80" aria-hidden="true" tabindex="-1"></a>        }<span class="op">,</span></span>
+<span id="cb9-81"><a href="#cb9-81" aria-hidden="true" tabindex="-1"></a>        <span class="dt">onUpdate</span><span class="op">:</span> (el) <span class="kw">=&gt;</span> {</span>
+<span id="cb9-82"><a href="#cb9-82" aria-hidden="true" tabindex="-1"></a>            <span class="kw">const</span> keystrokes <span class="op">=</span> <span class="bu">Number</span>(el<span class="op">.</span><span class="fu">getAttribute</span>(<span class="st">&#39;data-keystrokes&#39;</span>)) <span class="op">+</span> <span class="dv">1</span><span class="op">;</span></span>
+<span id="cb9-83"><a href="#cb9-83" aria-hidden="true" tabindex="-1"></a>            el<span class="op">.</span><span class="at">innerHTML</span> <span class="op">=</span> <span class="vs">`</span><span class="sc">${</span>keystrokes<span class="sc">}</span><span class="vs"> Keystrokes`</span><span class="op">;</span></span>
+<span id="cb9-84"><a href="#cb9-84" aria-hidden="true" tabindex="-1"></a>            el<span class="op">.</span><span class="fu">setAttribute</span>(<span class="st">&#39;data-keystrokes&#39;</span><span class="op">,</span> keystrokes)<span class="op">;</span></span>
+<span id="cb9-85"><a href="#cb9-85" aria-hidden="true" tabindex="-1"></a>        }<span class="op">,</span></span>
+<span id="cb9-86"><a href="#cb9-86" aria-hidden="true" tabindex="-1"></a>    }]<span class="op">,</span> <span class="co">// Another optional usage, with a custom status bar item that counts keystrokes</span></span>
+<span id="cb9-87"><a href="#cb9-87" aria-hidden="true" tabindex="-1"></a>    <span class="dt">styleSelectedText</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+<span id="cb9-88"><a href="#cb9-88" aria-hidden="true" tabindex="-1"></a>    <span class="dt">sideBySideFullscreen</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+<span id="cb9-89"><a href="#cb9-89" aria-hidden="true" tabindex="-1"></a>    <span class="dt">syncSideBySidePreviewScroll</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+<span id="cb9-90"><a href="#cb9-90" aria-hidden="true" tabindex="-1"></a>    <span class="dt">tabSize</span><span class="op">:</span> <span class="dv">4</span><span class="op">,</span></span>
+<span id="cb9-91"><a href="#cb9-91" aria-hidden="true" tabindex="-1"></a>    <span class="dt">toolbar</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+<span id="cb9-92"><a href="#cb9-92" aria-hidden="true" tabindex="-1"></a>    <span class="dt">toolbarTips</span><span class="op">:</span> <span class="kw">false</span><span class="op">,</span></span>
+<span id="cb9-93"><a href="#cb9-93" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<h3 id="toolbar-icons">Toolbar icons</h3>
+<p>Below are the built-in toolbar icons (only some of which are enabled by default), which can be reorganized however you like. “Name” is the name of the icon, referenced in the JS. “Action” is either a function or a URL to open. “Class” is the class given to the icon. “Tooltip” is the small tooltip that appears via the <code>title=""</code> attribute. Note that shortcut hints are added automatically and reflect the specified action if it has a key bind assigned to it (i.e. with the value of <code>action</code> set to <code>bold</code> and that of <code>tooltip</code> set to <code>Bold</code>, the final text the user will see would be “Bold (Ctrl-B)”).</p>
+<p>Additionally, you can add a separator between any icons by adding <code>"|"</code> to the toolbar array.</p>
+<table>
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 24%" />
+<col style="width: 60%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Action</th>
+<th style="text-align: left;">Tooltip<br>Class</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">bold</td>
+<td style="text-align: left;">toggleBold</td>
+<td style="text-align: left;">Bold<br>fa fa-bold</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">italic</td>
+<td style="text-align: left;">toggleItalic</td>
+<td style="text-align: left;">Italic<br>fa fa-italic</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">strikethrough</td>
+<td style="text-align: left;">toggleStrikethrough</td>
+<td style="text-align: left;">Strikethrough<br>fa fa-strikethrough</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">heading</td>
+<td style="text-align: left;">toggleHeadingSmaller</td>
+<td style="text-align: left;">Heading<br>fa fa-header</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">heading-smaller</td>
+<td style="text-align: left;">toggleHeadingSmaller</td>
+<td style="text-align: left;">Smaller Heading<br>fa fa-header</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">heading-bigger</td>
+<td style="text-align: left;">toggleHeadingBigger</td>
+<td style="text-align: left;">Bigger Heading<br>fa fa-lg fa-header</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">heading-1</td>
+<td style="text-align: left;">toggleHeading1</td>
+<td style="text-align: left;">Big Heading<br>fa fa-header header-1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">heading-2</td>
+<td style="text-align: left;">toggleHeading2</td>
+<td style="text-align: left;">Medium Heading<br>fa fa-header header-2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">heading-3</td>
+<td style="text-align: left;">toggleHeading3</td>
+<td style="text-align: left;">Small Heading<br>fa fa-header header-3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">code</td>
+<td style="text-align: left;">toggleCodeBlock</td>
+<td style="text-align: left;">Code<br>fa fa-code</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">quote</td>
+<td style="text-align: left;">toggleBlockquote</td>
+<td style="text-align: left;">Quote<br>fa fa-quote-left</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">unordered-list</td>
+<td style="text-align: left;">toggleUnorderedList</td>
+<td style="text-align: left;">Generic List<br>fa fa-list-ul</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ordered-list</td>
+<td style="text-align: left;">toggleOrderedList</td>
+<td style="text-align: left;">Numbered List<br>fa fa-list-ol</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">clean-block</td>
+<td style="text-align: left;">cleanBlock</td>
+<td style="text-align: left;">Clean block<br>fa fa-eraser</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">link</td>
+<td style="text-align: left;">drawLink</td>
+<td style="text-align: left;">Create Link<br>fa fa-link</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">image</td>
+<td style="text-align: left;">drawImage</td>
+<td style="text-align: left;">Insert Image<br>fa fa-picture-o</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">table</td>
+<td style="text-align: left;">drawTable</td>
+<td style="text-align: left;">Insert Table<br>fa fa-table</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">horizontal-rule</td>
+<td style="text-align: left;">drawHorizontalRule</td>
+<td style="text-align: left;">Insert Horizontal Line<br>fa fa-minus</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">preview</td>
+<td style="text-align: left;">togglePreview</td>
+<td style="text-align: left;">Toggle Preview<br>fa fa-eye no-disable</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">side-by-side</td>
+<td style="text-align: left;">toggleSideBySide</td>
+<td style="text-align: left;">Toggle Side by Side<br>fa fa-columns no-disable no-mobile</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">fullscreen</td>
+<td style="text-align: left;">toggleFullScreen</td>
+<td style="text-align: left;">Toggle Fullscreen<br>fa fa-arrows-alt no-disable no-mobile</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">guide</td>
+<td style="text-align: left;"><a href="https://www.markdownguide.org/basic-syntax/">This link</a></td>
+<td style="text-align: left;">Markdown Guide<br>fa fa-question-circle</td>
+</tr>
+</tbody>
+</table>
+<h3 id="toolbar-customization">Toolbar customization</h3>
+<p>Customize the toolbar using the <code>toolbar</code> option.</p>
+<p>Only the order of existing buttons:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> easyMDE <span class="op">=</span> <span class="kw">new</span> <span class="fu">EasyMDE</span>({</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">toolbar</span><span class="op">:</span> [<span class="st">&quot;bold&quot;</span><span class="op">,</span> <span class="st">&quot;italic&quot;</span><span class="op">,</span> <span class="st">&quot;heading&quot;</span><span class="op">,</span> <span class="st">&quot;|&quot;</span><span class="op">,</span> <span class="st">&quot;quote&quot;</span>]</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<p>All information and/or add your own icons</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> easyMDE <span class="op">=</span> <span class="kw">new</span> <span class="fu">EasyMDE</span>({</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">toolbar</span><span class="op">:</span> [</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>        {</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>            <span class="dt">name</span><span class="op">:</span> <span class="st">&quot;bold&quot;</span><span class="op">,</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>            <span class="dt">action</span><span class="op">:</span> EasyMDE<span class="op">.</span><span class="at">toggleBold</span><span class="op">,</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>            <span class="dt">className</span><span class="op">:</span> <span class="st">&quot;fa fa-bold&quot;</span><span class="op">,</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>            <span class="dt">title</span><span class="op">:</span> <span class="st">&quot;Bold&quot;</span><span class="op">,</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>        }<span class="op">,</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;italics&quot;</span><span class="op">,</span> <span class="co">// shortcut to pre-made button</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>        {</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>            <span class="dt">name</span><span class="op">:</span> <span class="st">&quot;custom&quot;</span><span class="op">,</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>            <span class="dt">action</span><span class="op">:</span> (editor) <span class="kw">=&gt;</span> {</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>                <span class="co">// Add your own code</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>            }<span class="op">,</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>            <span class="dt">className</span><span class="op">:</span> <span class="st">&quot;fa fa-star&quot;</span><span class="op">,</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>            <span class="dt">title</span><span class="op">:</span> <span class="st">&quot;Custom Button&quot;</span><span class="op">,</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>            <span class="dt">attributes</span><span class="op">:</span> { <span class="co">// for custom attributes</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>                <span class="dt">id</span><span class="op">:</span> <span class="st">&quot;custom-id&quot;</span><span class="op">,</span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>                <span class="st">&quot;data-value&quot;</span><span class="op">:</span> <span class="st">&quot;custom value&quot;</span> <span class="co">// HTML5 data-* attributes need to be enclosed in quotation marks (&quot;&quot;) because of the dash (-) in its name.</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>            }</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>        }<span class="op">,</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;|&quot;</span> <span class="co">// Separator</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>        <span class="co">// [, ...]</span></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<p>Put some buttons on dropdown menu</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> easyMDE <span class="op">=</span> <span class="kw">new</span> <span class="fu">EasyMDE</span>({</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">toolbar</span><span class="op">:</span> [{</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>                <span class="dt">name</span><span class="op">:</span> <span class="st">&quot;heading&quot;</span><span class="op">,</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>                <span class="dt">action</span><span class="op">:</span> EasyMDE<span class="op">.</span><span class="at">toggleHeadingSmaller</span><span class="op">,</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>                <span class="dt">className</span><span class="op">:</span> <span class="st">&quot;fa fa-header&quot;</span><span class="op">,</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>                <span class="dt">title</span><span class="op">:</span> <span class="st">&quot;Headers&quot;</span><span class="op">,</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>            }<span class="op">,</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>            <span class="st">&quot;|&quot;</span><span class="op">,</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>            {</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>                <span class="dt">name</span><span class="op">:</span> <span class="st">&quot;others&quot;</span><span class="op">,</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>                <span class="dt">className</span><span class="op">:</span> <span class="st">&quot;fa fa-blind&quot;</span><span class="op">,</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>                <span class="dt">title</span><span class="op">:</span> <span class="st">&quot;others buttons&quot;</span><span class="op">,</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>                <span class="dt">children</span><span class="op">:</span> [</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>                    {</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>                        <span class="dt">name</span><span class="op">:</span> <span class="st">&quot;image&quot;</span><span class="op">,</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>                        <span class="dt">action</span><span class="op">:</span> EasyMDE<span class="op">.</span><span class="at">drawImage</span><span class="op">,</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>                        <span class="dt">className</span><span class="op">:</span> <span class="st">&quot;fa fa-picture-o&quot;</span><span class="op">,</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>                        <span class="dt">title</span><span class="op">:</span> <span class="st">&quot;Image&quot;</span><span class="op">,</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>                    }<span class="op">,</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>                    {</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>                        <span class="dt">name</span><span class="op">:</span> <span class="st">&quot;quote&quot;</span><span class="op">,</span></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>                        <span class="dt">action</span><span class="op">:</span> EasyMDE<span class="op">.</span><span class="at">toggleBlockquote</span><span class="op">,</span></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>                        <span class="dt">className</span><span class="op">:</span> <span class="st">&quot;fa fa-percent&quot;</span><span class="op">,</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>                        <span class="dt">title</span><span class="op">:</span> <span class="st">&quot;Quote&quot;</span><span class="op">,</span></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>                    }<span class="op">,</span></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>                    {</span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>                        <span class="dt">name</span><span class="op">:</span> <span class="st">&quot;link&quot;</span><span class="op">,</span></span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>                        <span class="dt">action</span><span class="op">:</span> EasyMDE<span class="op">.</span><span class="at">drawLink</span><span class="op">,</span></span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>                        <span class="dt">className</span><span class="op">:</span> <span class="st">&quot;fa fa-link&quot;</span><span class="op">,</span></span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>                        <span class="dt">title</span><span class="op">:</span> <span class="st">&quot;Link&quot;</span><span class="op">,</span></span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>                    }</span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>                ]</span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>            }<span class="op">,</span></span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>        <span class="co">// [, ...]</span></span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<h3 id="keyboard-shortcuts">Keyboard shortcuts</h3>
+<p>EasyMDE comes with an array of predefined keyboard shortcuts, but they can be altered with a configuration option. The list of default ones is as follows:</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Shortcut (Windows / Linux)</th>
+<th style="text-align: left;">Shortcut (macOS)</th>
+<th style="text-align: left;">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><em>Ctrl-’</em></td>
+<td style="text-align: left;"><em>Cmd-’</em></td>
+<td style="text-align: left;">“toggleBlockquote”</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><em>Ctrl-B</em></td>
+<td style="text-align: left;"><em>Cmd-B</em></td>
+<td style="text-align: left;">“toggleBold”</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><em>Ctrl-E</em></td>
+<td style="text-align: left;"><em>Cmd-E</em></td>
+<td style="text-align: left;">“cleanBlock”</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><em>Ctrl-H</em></td>
+<td style="text-align: left;"><em>Cmd-H</em></td>
+<td style="text-align: left;">“toggleHeadingSmaller”</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><em>Ctrl-I</em></td>
+<td style="text-align: left;"><em>Cmd-I</em></td>
+<td style="text-align: left;">“toggleItalic”</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><em>Ctrl-K</em></td>
+<td style="text-align: left;"><em>Cmd-K</em></td>
+<td style="text-align: left;">“drawLink”</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><em>Ctrl-L</em></td>
+<td style="text-align: left;"><em>Cmd-L</em></td>
+<td style="text-align: left;">“toggleUnorderedList”</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><em>Ctrl-P</em></td>
+<td style="text-align: left;"><em>Cmd-P</em></td>
+<td style="text-align: left;">“togglePreview”</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><em>Ctrl-Alt-C</em></td>
+<td style="text-align: left;"><em>Cmd-Alt-C</em></td>
+<td style="text-align: left;">“toggleCodeBlock”</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><em>Ctrl-Alt-I</em></td>
+<td style="text-align: left;"><em>Cmd-Alt-I</em></td>
+<td style="text-align: left;">“drawImage”</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><em>Ctrl-Alt-L</em></td>
+<td style="text-align: left;"><em>Cmd-Alt-L</em></td>
+<td style="text-align: left;">“toggleOrderedList”</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><em>Shift-Ctrl-H</em></td>
+<td style="text-align: left;"><em>Shift-Cmd-H</em></td>
+<td style="text-align: left;">“toggleHeadingBigger”</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><em>F9</em></td>
+<td style="text-align: left;"><em>F9</em></td>
+<td style="text-align: left;">“toggleSideBySide”</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><em>F11</em></td>
+<td style="text-align: left;"><em>F11</em></td>
+<td style="text-align: left;">“toggleFullScreen”</td>
+</tr>
+</tbody>
+</table>
+<p>Here is how you can change a few, while leaving others untouched:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> editor <span class="op">=</span> <span class="kw">new</span> <span class="fu">EasyMDE</span>({</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">shortcuts</span><span class="op">:</span> {</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;toggleOrderedList&quot;</span><span class="op">:</span> <span class="st">&quot;Ctrl-Alt-K&quot;</span><span class="op">,</span> <span class="co">// alter the shortcut for toggleOrderedList</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;toggleCodeBlock&quot;</span><span class="op">:</span> <span class="kw">null</span><span class="op">,</span> <span class="co">// unbind Ctrl-Alt-C</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">&quot;drawTable&quot;</span><span class="op">:</span> <span class="st">&quot;Cmd-Alt-T&quot;</span><span class="op">,</span> <span class="co">// bind Cmd-Alt-T to drawTable action, which doesn&#39;t come with a default shortcut</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<p>Shortcuts are automatically converted between platforms. If you define a shortcut as “Cmd-B”, on PC that shortcut will be changed to “Ctrl-B”. Conversely, a shortcut defined as “Ctrl-B” will become “Cmd-B” for Mac users.</p>
+<p>The list of actions that can be bound is the same as the list of built-in actions available for <a href="#toolbar-icons">toolbar buttons</a>.</p>
+<h2 id="advanced-use">Advanced use</h2>
+<h3 id="event-handling">Event handling</h3>
+<p>You can catch the following list of events: https://codemirror.net/doc/manual.html#events</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> easyMDE <span class="op">=</span> <span class="kw">new</span> <span class="fu">EasyMDE</span>()<span class="op">;</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>easyMDE<span class="op">.</span><span class="at">codemirror</span><span class="op">.</span><span class="fu">on</span>(<span class="st">&quot;change&quot;</span><span class="op">,</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(easyMDE<span class="op">.</span><span class="fu">value</span>())<span class="op">;</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>})<span class="op">;</span></span></code></pre></div>
+<h3 id="removing-easymde-from-text-area">Removing EasyMDE from text area</h3>
+<p>You can revert to the initial text area by calling the <code>toTextArea</code> method. Note that this clears up the autosave (if enabled) associated with it. The text area will retain any text from the destroyed EasyMDE instance.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> easyMDE <span class="op">=</span> <span class="kw">new</span> <span class="fu">EasyMDE</span>()<span class="op">;</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co">// ...</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>easyMDE<span class="op">.</span><span class="fu">toTextArea</span>()<span class="op">;</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>easyMDE <span class="op">=</span> <span class="kw">null</span><span class="op">;</span></span></code></pre></div>
+<p>If you need to remove installed listeners (when editor not needed anymore), call <code>easyMDE.cleanup()</code></p>
+<h3 id="useful-methods">Useful methods</h3>
+<p>The following self-explanatory methods may be of use while developing with EasyMDE.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> easyMDE <span class="op">=</span> <span class="kw">new</span> <span class="fu">EasyMDE</span>()<span class="op">;</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>easyMDE<span class="op">.</span><span class="fu">isPreviewActive</span>()<span class="op">;</span> <span class="co">// returns boolean</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>easyMDE<span class="op">.</span><span class="fu">isSideBySideActive</span>()<span class="op">;</span> <span class="co">// returns boolean</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>easyMDE<span class="op">.</span><span class="fu">isFullscreenActive</span>()<span class="op">;</span> <span class="co">// returns boolean</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>easyMDE<span class="op">.</span><span class="fu">clearAutosavedValue</span>()<span class="op">;</span> <span class="co">// no returned value</span></span></code></pre></div>
+<h2 id="how-it-works">How it works</h2>
+<p>EasyMDE is a continuation of SimpleMDE.</p>
+<p>SimpleMDE began as an improvement of <a href="https://github.com/lepture/editor">lepture’s Editor project</a>, but has now taken on an identity of its own. It is bundled with <a href="https://github.com/codemirror/codemirror">CodeMirror</a> and depends on <a href="http://fontawesome.io">Font Awesome</a>.</p>
+<p>CodeMirror is the backbone of the project and parses much of the Markdown syntax as it’s being written. This allows us to add styles to the Markdown that’s being written. Additionally, a toolbar and status bar have been added to the top and bottom, respectively. Previews are rendered by <a href="https://github.com/chjj/marked">Marked</a> using GFM.</p>
+<h2 id="simplemde-fork">SimpleMDE fork</h2>
+<p>I originally made this fork to implement FontAwesome 5 compatibility into SimpleMDE. When that was done I submitted a <a href="https://github.com/sparksuite/simplemde-markdown-editor/pull/666">pull request</a>, which has not been accepted yet. This, and the project being inactive since May 2017, triggered me to make more changes and try to put new life into the project.</p>
+<p>Changes include: * FontAwesome 5 compatibility * Guide button works when editor is in preview mode * Links are now <code>https://</code> by default * Small styling changes * Support for Node 8 and beyond * Lots of refactored code * Links in preview will open in a new tab by default * Typescript support</p>
+<p>My intention is to continue development on this project, improving it and keeping it alive.</p>
+<h2 id="hacking-easymde">Hacking EasyMDE</h2>
+<p>You may want to edit this library to adapt its behavior to your needs. This can be done in some quick steps:</p>
+<ol type="1">
+<li>Follow the <a href="./CONTRIBUTING.md#prerequisites">prerequisites</a> and <a href="./CONTRIBUTING.md#installation">installation</a> instructions in the contribution guide;</li>
+<li>Do your changes;</li>
+<li>Run <code>gulp</code> command, which will generate files: <code>dist/easymde.min.css</code> and <code>dist/easymde.min.js</code>;</li>
+<li>Copy-paste those files to your code base, and you are done.</li>
+</ol>
+<h2 id="contributing">Contributing</h2>
+<p>Want to contribute to EasyMDE? Thank you! We have a <a href="./CONTRIBUTING.md">contribution guide</a> just for you!</p>
+<h2 id="license">License</h2>
+<p>This project is released under the <a href="./LICENSE">MIT License</a>.</p>
+<ul>
+<li>Copyright (c) 2015 Sparksuite, Inc.</li>
+<li>Copyright (c) 2017 Jeroen Akkerman.</li>
+</ul>
