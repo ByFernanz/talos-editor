@@ -388,6 +388,7 @@ span[data-img-src]::after {
 .cm-s-easymde .cm-header-1 {
     font-size: 150%;
     line-height: 150%;
+    font-weight: 700;
 }
 
 .talos-editor{
@@ -405,16 +406,27 @@ span[data-img-src]::after {
 .cm-s-easymde .cm-link {
     color: #006600;
     font-weight: bold;
+    text-decoration: none;
 }
 
 .cm-s-easymde .cm-url {
     color: #292;
 }
 
+.cm-attributes{
+    color: green;
+}
+
 
 .cm-s-easymde .cm-comment {
-    background: rgba(0,0,0,.05);
-    border-radius: 5px;
+
+    background: transparent;
     font-style: italic;
-    color: gray;
+    color: #4999ff;
+}
+
+.cm-blocksection {
+    background: #e3e3e3;
+    border-radius: 4px;
+    color: #4a4900;
 }

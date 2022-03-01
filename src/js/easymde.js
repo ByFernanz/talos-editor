@@ -2106,9 +2106,39 @@ EasyMDE.prototype.render = function (el) {
             addNew: false,
         };
     }
-
+    
+    
+    // Talos Markdown
+    CodeMirror.defineMode("talos", function() {
+    return {/*from   w w  w .  ja  va 2 s . co  m*/
+        token: function(stream,state) {
+            if (stream.match(/^#\s.*$/) ) {
+                return "header-1";
+            }else if (stream.match(/\[([^\[\]]+)\](?!\(|\:|{)/) ) {
+                return "link";
+            }else if (stream.match(/\[\[(\S*\S)\]\]/) ) {
+                return "link";
+            }else if (stream.match(/\[(.*?)\]{([^}]+)}/) ) {
+                return "attributes";
+            }else if (stream.match(/{[^}]+}/) ) {
+                return "attributes";
+            }else if (stream.match(/<!--(.*?)-->/) ) {
+                return "comment";
+             }else if (stream.match(/(\:{3,}).*/) ) {
+                return "blocksection";
+            } else if (stream.match("bbb") ) {
+                return "style2";
+            } else {
+                stream.next();
+                return null;
+            }
+        }
+    };
+});
+    // end Talos Markdown
+    
     this.codemirror = CodeMirror.fromTextArea(el, {
-        mode: mode,
+        mode: "talos",
         backdrop: backdrop,
         theme: (options.theme != undefined) ? options.theme : 'easymde',
         tabSize: (options.tabSize != undefined) ? options.tabSize : 2,
@@ -2141,7 +2171,7 @@ EasyMDE.prototype.render = function (el) {
             cm.save();
         });
     }
-
+    
     this.gui = {};
 
     // Wrap Codemirror with container before create toolbar, etc,

@@ -7,7 +7,7 @@ var concat = require('gulp-concat');
 var header = require('gulp-header');
 var buffer = require('vinyl-buffer');
 var pkg = require('./package.json');
-var eslint = require('gulp-eslint');
+/*var eslint = require('gulp-eslint');*/
 var browserify = require('browserify');
 var source = require('vinyl-source-stream');
 var rename = require('gulp-rename');
@@ -27,12 +27,12 @@ var css_files = [
     './node_modules/codemirror-spell-checker/src/css/spell-checker.css',
 ];
 
-function lint() {
-    return gulp.src('./src/js/**/*.js')
-        .pipe(eslint())
-        .pipe(eslint.format())
-        .pipe(eslint.failAfterError());
-}
+//function lint() {
+//    return gulp.src('./src/js/**/*.js')
+//        .pipe(eslint())
+//        .pipe(eslint.format())
+//        .pipe(eslint.failAfterError());
+//}
 
 function scripts() {
     return browserify({entries: './src/js/easymde.js', standalone: 'EasyMDE'}).bundle()
@@ -59,8 +59,8 @@ function watch() {
     gulp.watch(css_files, styles);
 }
 
-var build = gulp.parallel(gulp.series(lint, scripts), styles);
+var build = gulp.parallel(gulp.series(/*lint, */scripts), styles);
 
 gulp.task('default', build);
 gulp.task('watch', gulp.series(build, watch));
-gulp.task('lint', lint);
+/*gulp.task('lint', lint);*/
