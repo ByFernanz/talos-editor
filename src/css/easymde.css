@@ -385,11 +385,24 @@ span[data-img-src]::after {
     font-family: monospace;
 }
 
-.cm-s-easymde .cm-header-1 {
-    font-size: 150%;
-    line-height: 150%;
+.cm-s-easymde .cm-header-1, .cm-header-1-fix, .cm-header-1-ignore {
+    font-size: 130%;
+    line-height: 130%;
     font-weight: 700;
 }
+
+.cm-header-1 {
+   color: darkblue;
+}
+
+.cm-header-1-fix {
+   color: darkred;
+}
+
+.cm-header-1-ignore {
+   color: black;
+}
+
 
 .talos-editor{
   /*font-family: 'Annie',sans-serif;*/
@@ -404,7 +417,7 @@ span[data-img-src]::after {
 }
 
 .cm-s-easymde .cm-link {
-    color: #006600;
+    color: darkblue;
     font-weight: bold;
     text-decoration: none;
 }
@@ -422,11 +435,26 @@ span[data-img-src]::after {
 
     background: transparent;
     font-style: italic;
-    color: #4999ff;
+    color: gray;
 }
 
 .cm-blocksection {
     background: #e3e3e3;
     border-radius: 4px;
-    color: #4a4900;
+    color: darkblue;
+    text-transform: uppercase;
+}
+
+.cm-list {
+    font-weight: bold;
+}
+
+.cm-ymlblock, .cm-ymlkey {
+    color: darkgreen;
+    font-weight: bold;
+}
+
+.cm-keyword {
+    color: darkred;
+    font-weight: bold;
 }

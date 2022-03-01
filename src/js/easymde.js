@@ -2112,8 +2112,12 @@ EasyMDE.prototype.render = function (el) {
     CodeMirror.defineMode("talos", function() {
     return {/*from   w w  w .  ja  va 2 s . co  m*/
         token: function(stream,state) {
-            if (stream.match(/^#\s.*$/) ) {
+            if (stream.match(/^#\s[a-z][a-z_0-9]*$/m) ) {
                 return "header-1";
+            }else if (stream.match(/^#\s[0-9]+\s{0,1}(.*)$/m) ) {
+                return "header-1-fix";
+            }else if (stream.match(/^#\s[A-Z].*$/m) ) {
+                return "header-1-ignore";
             }else if (stream.match(/\[([^\[\]]+)\](?!\(|\:|{)/) ) {
                 return "link";
             }else if (stream.match(/\[\[(\S*\S)\]\]/) ) {
@@ -2126,8 +2130,18 @@ EasyMDE.prototype.render = function (el) {
                 return "comment";
              }else if (stream.match(/(\:{3,}).*/) ) {
                 return "blocksection";
-            } else if (stream.match("bbb") ) {
-                return "style2";
+            }else if (stream.match(/^(\-|\*|\+)\s/m) ) {
+                return "list";
+            }else if (stream.match(/^(\-\-\-|\.\.\.)$/m) ) {
+                return "ymlblock";
+            }else if (stream.match(/^\S*\:\s/m) ) {
+                return "ymlkey";
+            }else if (stream.match(/\"[^"]+\"/m) ) {
+                return "string";
+            }else if (stream.match(/[^(*|_)](\*|_)[^(*_)]+(\*|_)/m) ) {
+                return "em";
+            }else if (stream.match(/[^**|__](\*\*|__)[^**|__]+(\*\*|__)/) ) {
+                return "strong";
             } else {
                 stream.next();
                 return null;
