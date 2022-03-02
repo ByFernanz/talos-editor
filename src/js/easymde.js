@@ -2112,11 +2112,11 @@ EasyMDE.prototype.render = function (el) {
     CodeMirror.defineMode("talos", function() {
     return {/*from   w w  w .  ja  va 2 s . co  m*/
         token: function(stream,state) {
-            if (stream.match(/^#\s[a-z][a-z_0-9]*$/m) ) {
+            if (stream.match(stream.sol() && /^#\s[a-z][a-z_0-9]*\s{0,1}(.*)$/m) ) {
                 return "header-1";
-            }else if (stream.match(/^#\s[0-9]+\s{0,1}(.*)$/m) ) {
+            }else if (stream.sol() && stream.match(/^#\s[0-9]+\s{0,1}(.*)$/m) ) {
                 return "header-1-fix";
-            }else if (stream.match(/^#\s[A-Z].*$/m) ) {
+            }else if (stream.sol() && stream.match(/^#\s[A-Z].*$/m) ) {
                 return "header-1-ignore";
             }else if (stream.match(/\[([^\[\]]+)\](?!\(|\:|{)/) ) {
                 return "link";
@@ -2128,13 +2128,13 @@ EasyMDE.prototype.render = function (el) {
                 return "attributes";
             }else if (stream.match(/<!--(.*?)-->/) ) {
                 return "comment";
-             }else if (stream.match(/(\:{3,}).*/) ) {
+             }else if (stream.sol() && stream.match(/^(\:{3,}).*/m) ) {
                 return "blocksection";
-            }else if (stream.match(/^(\-|\*|\+)\s/m) ) {
+            }else if (stream.sol() && stream.match(/^(\-|\*|\+)\s/m) ) {
                 return "list";
-            }else if (stream.match(/^(\-\-\-|\.\.\.)$/m) ) {
+            }else if (stream.sol() && stream.match(/^(\-\-\-|\.\.\.)$/m) ) {
                 return "ymlblock";
-            }else if (stream.match(/^\S*\:\s/m) ) {
+            }else if (stream.sol() && stream.match(/^[a-z][a-z_0-9]*\:\s/gm) ) {
                 return "ymlkey";
             }else if (stream.match(/\"[^"]+\"/m) ) {
                 return "string";
@@ -2146,7 +2146,8 @@ EasyMDE.prototype.render = function (el) {
                 stream.next();
                 return null;
             }
-        }
+        },
+        sol: true
     };
 });
     // end Talos Markdown
@@ -3014,3 +3015,5 @@ EasyMDE.prototype.toTextArea = function () {
 };
 
 module.exports = EasyMDE;
+
+

@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Bellefair&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../dist/easymde.min.css">
     <script src="../dist/easymde.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
 </head>
 
 <body>
@@ -89,6 +90,7 @@ Of course some non-gamebook sections like this can show up
 later in the book as well. Remember Capitalized Headings
 are ignored.
 </textarea>
+    <div id="diagram"></div>
     <script>
 	const easyMDE = new EasyMDE({
     		autosave: {
@@ -116,7 +118,41 @@ are ignored.
     		});
         easyMDE.toggleFullScreen();
        easyMDE.codemirror.setOption('lineNumbers', true);
+       //mermaid.initialize({startOnLoad:true});
+       
+       var sourcemmd;
+        function cMDtoMMD (){
+        	sourcemmd="graph TD\n";
+		let sourcefile=easyMDE.value();
+		let lines = sourcefile.split('\n');
+		let heading = /^#\s([a-z_0-9]*)(\s|$)/gm;
+		let link = /\[([^\[\]]+)\](?!\(|\:|{)/gm;
+		let currentH="";
+		let linkCounter=1;
+		lines.forEach(function(line,index){
+			if(line.match(heading)){
+				let matches = Array.from(line.matchAll(heading), function (m){
+					if (linkCounter == 0){
+					sourcemmd += currentH + "\n";	
+					}
+					currentH = m[1];
+					linkCounter = 0;
+				});
+			} else if (line.match(link)){
+				let matches = Array.from(line.matchAll(link), function (m){
+					sourcemmd += currentH + " --> " + m[1] + "\n";
+					linkCounter+=1;
+					//console.log(m[1]);
+				});	
+			}
+		});
+		if (linkCounter == 0){
+			sourcemmd += currentH + "\n";	
+		}
+		if (mermaid.parse(sourcemmd)){
+			$("#diagram").innerHTML=mermaid.render("preparedScheme", sourcemmd)
+		}
+	}
     </script>
 </body>
-
 </html>
