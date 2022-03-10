@@ -383,6 +383,7 @@ span[data-img-src]::after {
 
 .CodeMirror-code {
     font-family: monospace;
+   /*font-family: "trebuchet ms",verdana,arial,sans-serif;*/
 }
 
 .cm-s-easymde .cm-header-1, .cm-header-1-fix, .cm-header-1-ignore {
@@ -406,14 +407,21 @@ span[data-img-src]::after {
 
 .talos-editor{
   /*font-family: 'Annie',sans-serif;*/
-  font-family: 'Bellefair', serif;
+  /*font-family: 'Bellefair', serif;*/
+  font-family: "trebuchet ms",verdana,arial,sans-serif;
   font-weight: 500;
-  font-size: 150%;
+  font-size: 110%;
+}
+
+.robot{
+    max-height: 50%;
+    position: absolute;
 }
 
 .EasyMDEContainer .CodeMirror {
-  font-size: 1.2em;
+  font-size: 1.4em;
   padding: 0;
+  line-height: 0.9em;
 }
 
 .cm-s-easymde .cm-link {
@@ -457,4 +465,27 @@ span[data-img-src]::after {
 .cm-keyword {
     color: darkred;
     font-weight: bold;
+}
+
+rect {
+    stroke: #000;
+    stroke-width: 2px;
+}
+
+#graph-div .node rect, #graph-div .node circle, #graph-div .node ellipse, #graph-div .node polygon, #graph-div .node path {
+    stroke: #000!important;
+    stroke-width: 2px!important;
+}
+
+.clickable:hover .label{
+    font-weight: bold!important;
+    font-size: 0.95em!important;
+}
+
+.clickable:hover rect{
+    fill: #cacaca!important;
+}
+
+.editor-preview{
+    text-align: center;
 }

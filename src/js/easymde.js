@@ -8,6 +8,7 @@ require('codemirror/addon/mode/overlay.js');
 require('codemirror/addon/display/placeholder.js');
 require('codemirror/addon/display/autorefresh.js');
 require('codemirror/addon/selection/mark-selection.js');
+require('codemirror/addon/selection/active-line.js');
 require('codemirror/addon/search/searchcursor.js');
 require('codemirror/mode/gfm/gfm.js');
 require('codemirror/mode/xml/xml.js');
@@ -1012,10 +1013,11 @@ function toggleSideBySide(editor) {
     }
 
     var sideBySideRenderingFunction = function () {
-        var newValue = editor.options.previewRender(editor.value(), preview);
+        cMDtoMMD(preview);
+        /*var newValue = editor.options.previewRender(editor.value(), preview);
         if (newValue != null) {
             preview.innerHTML = newValue;
-        }
+        }*/
     };
 
     if (!cm.sideBySideRenderingFunction) {
@@ -1023,10 +1025,11 @@ function toggleSideBySide(editor) {
     }
 
     if (useSideBySideListener) {
-        var newValue = editor.options.previewRender(editor.value(), preview);
-        if (newValue != null) {
+        /*var newValue = editor.options.previewRender(editor.value(), preview);*/
+        cMDtoMMD(preview);
+        /*if (newValue != null) {
             preview.innerHTML = newValue;
-        }
+        }*/
         cm.on('update', cm.sideBySideRenderingFunction);
     } else {
         cm.off('update', cm.sideBySideRenderingFunction);
@@ -1092,7 +1095,8 @@ function togglePreview(editor) {
             toolbar_div.className += ' disabled-for-preview';
         }
     }
-    preview.innerHTML = editor.options.previewRender(editor.value(), preview);
+    cMDtoMMD(preview);
+    /*preview.innerHTML = editor.options.previewRender(editor.value(), preview);*/
 
 }
 
@@ -2580,24 +2584,24 @@ EasyMDE.prototype.createSideBySide = function () {
             return;
         }
         pScroll = true;
-        var height = v.getScrollInfo().height - v.getScrollInfo().clientHeight;
+        /*var height = v.getScrollInfo().height - v.getScrollInfo().clientHeight;
         var ratio = parseFloat(v.getScrollInfo().top) / height;
         var move = (preview.scrollHeight - preview.clientHeight) * ratio;
-        preview.scrollTop = move;
+        preview.scrollTop = move;*/
     });
 
     // Syncs scroll  preview -> editor
-    preview.onscroll = function () {
+    /*preview.onscroll = function () {
         if (pScroll) {
             pScroll = false;
             return;
-        }
+        
         cScroll = true;
         var height = preview.scrollHeight - preview.clientHeight;
         var ratio = parseFloat(preview.scrollTop) / height;
         var move = (cm.getScrollInfo().height - cm.getScrollInfo().clientHeight) * ratio;
         cm.scrollTo(0, move);
-    };
+    };*/
     return preview;
 };
 
@@ -2616,7 +2620,8 @@ EasyMDE.prototype.createToolbar = function (items) {
 
     var bar = document.createElement('div');
     bar.className = 'editor-toolbar';
-    bar.innerHTML = '<span class="talos-editor">Talos Editor </span><i class="separator">|</i>';
+    bar.innerHTML = '<img src="./robot_mini.png" class="robot"/>'
+    bar.innerHTML += '<span class="talos-editor">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Talos Editor </span><i class="separator">|</i>';
 
     var self = this;
 
@@ -2849,7 +2854,8 @@ EasyMDE.prototype.value = function (val) {
         if (this.isPreviewActive()) {
             var wrapper = cm.getWrapperElement();
             var preview = wrapper.lastChild;
-            preview.innerHTML = this.options.previewRender(val, preview);
+            /*preview.innerHTML = this.options.previewRender(val, preview);*/
+            cMDtoMMD(preview);
         }
         return this;
     }

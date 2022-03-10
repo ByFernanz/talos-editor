@@ -112,45 +112,84 @@ are ignored.
     		},
         	spellChecker: false,
         	nativeSpellcheck: false,
-        	toggleFullScreen: true,
-        	hideIcons: ["fullscreen"],
+        	//hideIcons: ["fullscreen", "bold","italic", "heading", "quote", "unordered-list","ordered-list","link","image"],
+			toolbar: ["preview", "side-by-side", "|", "undo", "redo", "|", "guide"],
     		status: false
     		});
         easyMDE.toggleFullScreen();
+		easyMDE.toggleSideBySide();
        easyMDE.codemirror.setOption('lineNumbers', true);
-       //mermaid.initialize({startOnLoad:true});
+	   easyMDE.codemirror.setOption('styleActiveLine', true);
+       mermaid.initialize({
+		   securityLevel: 'loose',
+		   theme: "neutral",
+		   flowchart: {htmlLabels: true}
+		});
        
+		function jumpToLine(i) {
+			let editor = easyMDE.codemirror
+			editor.focus();
+			editor.setCursor(i,0); 
+    		var t = editor.charCoords({line: i, ch: 0}, "local").top; 
+    		var middleHeight = editor.getScrollerElement().offsetHeight / 55; 
+    		editor.scrollTo(null, t - middleHeight - 5);
+		}
+
+
        var sourcemmd;
-        function cMDtoMMD (){
-        	sourcemmd="graph TD\n";
+	   var copymmd="";
+	   var lines;
+        function cMDtoMMD (elpreview){
+        sourcemmd="graph TD\n";
 		let sourcefile=easyMDE.value();
-		let lines = sourcefile.split('\n');
+		lines = sourcefile.split('\n');
 		let heading = /^#\s([a-z_0-9]*)(\s|$)/gm;
 		let link = /\[([^\[\]]+)\](?!\(|\:|{)/gm;
 		let currentH="";
-		let linkCounter=1;
+		/*let linkCounter=1;*/
 		lines.forEach(function(line,index){
 			if(line.match(heading)){
 				let matches = Array.from(line.matchAll(heading), function (m){
-					if (linkCounter == 0){
-					sourcemmd += currentH + "\n";	
-					}
+					//if (linkCounter == 0){
+					//sourcemmd += currentH + "\n";
+					//sourcemmd += "click " + currentH + "jumpToLine 'tooltip'\n"
 					currentH = m[1];
-					linkCounter = 0;
+					sourcemmd += currentH + "\n";
+					//sourcemmd += currentH + '[<a onclick="jumpToLine()">'+ currentH +'</a>]\n'
+					//sourcemmd += "click " + currentH + " jumpToLine\n"
+					sourcemmd += "class " + currentH + " clickable\n"
+					//}
+					//linkCounter = 0;
 				});
 			} else if (line.match(link)){
 				let matches = Array.from(line.matchAll(link), function (m){
 					sourcemmd += currentH + " --> " + m[1] + "\n";
-					linkCounter+=1;
+					// para retornar la posicion de la linea del elemento
+					// lines.findIndex(element => element.includes("# 24"))
+					//linkCounter+=1;
 					//console.log(m[1]);
 				});	
 			}
 		});
-		if (linkCounter == 0){
+		/*if (linkCounter == 0){
 			sourcemmd += currentH + "\n";	
-		}
-		if (mermaid.parse(sourcemmd)){
-			$("#diagram").innerHTML=mermaid.render("preparedScheme", sourcemmd)
+		}*/
+		console.log(sourcemmd)
+		if (mermaid.parse(sourcemmd) && sourcemmd != copymmd){
+			mermaid.render("graph-div", sourcemmd, function(svg){
+				elpreview.innerHTML=svg
+				let clickNodes = document.getElementsByClassName("clickable")
+				console.log(clickNodes)
+				for (el of clickNodes) {
+					el.lastChild.addEventListener('click', function(element){
+						console.log(element.srcElement.innerText)
+						let head = "# " + element.srcElement.innerText;
+ 						let ln = lines.findIndex(element => element.includes(head))
+						jumpToLine(ln)
+					})
+				}
+			})
+			copymmd = sourcemmd
 		}
 	}
     </script>
