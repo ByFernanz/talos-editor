@@ -11,7 +11,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Bellefair&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../dist/easymde.min.css">
     <script src="../dist/easymde.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script src="js/mermaid.min.js"></script>
+	<script src="js/jquery-3.6.0.min.js"></script>
+    <script src="js/js-yaml.min.js"></script>
+    <script src="js/markdown-it.min.js"></script>
+    <script src="js/html2pdf.bundle.min.js"></script>
+    <script src="js/jszip.min.js"></script>
+    <script src="js/ejs.min.js"></script>
+    <script src="js/FileSaver.min.js"></script>
+    <script src="js/html-docx.js"></script>
+    <script src="js/jepub.min.js"></script>
+    <script src="js/talos.js"></script>
 </head>
 
 <body>
@@ -145,44 +155,53 @@ are ignored.
 		lines = sourcefile.split('\n');
 		let heading = /^#\s([a-z_0-9]*)(\s|$)/gm;
 		let link = /\[([^\[\]]+)\](?!\(|\:|{)/gm;
+		let div = /^(\:{3,})\s([a-z][a-z_0-9]*)\s{0,1}.*?$/m;
+		let enddiv = /^(\:{3,})\s*?[^a-z_0-9]*$/m;
 		let currentH="";
-		/*let linkCounter=1;*/
+
+		//Detectar tipos de secciones
+		let regexLib = {
+  			normal: /^[a-z][a-z_0-9]*\s{0,1}(.*)$/m,
+  			fixed: /^[0-9]+\s{0,1}(.*)$/m
+		};
 		lines.forEach(function(line,index){
 			if(line.match(heading)){
 				let matches = Array.from(line.matchAll(heading), function (m){
-					//if (linkCounter == 0){
-					//sourcemmd += currentH + "\n";
-					//sourcemmd += "click " + currentH + "jumpToLine 'tooltip'\n"
 					currentH = m[1];
-					sourcemmd += currentH + "\n";
-					//sourcemmd += currentH + '[<a onclick="jumpToLine()">'+ currentH +'</a>]\n'
-					//sourcemmd += "click " + currentH + " jumpToLine\n"
+					sourcemmd += currentH + "(" + currentH + ")\n";
 					sourcemmd += "class " + currentH + " clickable\n"
-					//}
-					//linkCounter = 0;
+					if (currentH.match(regexLib.normal)) {
+						//sourcemmd += "class " + currentH + " normal\n"
+						sourcemmd += "style " + currentH + " fill:#c7c7ff\n"
+					} else if (currentH.match(regexLib.fixed)) {
+						//sourcemmd += "class " + currentH + " fixed\n"
+						sourcemmd += "style " + currentH + " fill:#f4a4a4\n"
+					}
 				});
 			} else if (line.match(link)){
 				let matches = Array.from(line.matchAll(link), function (m){
 					sourcemmd += currentH + " --> " + m[1] + "\n";
-					// para retornar la posicion de la linea del elemento
-					// lines.findIndex(element => element.includes("# 24"))
-					//linkCounter+=1;
-					//console.log(m[1]);
 				});	
+			} else if (line.match(div)){
+				let sub = line.match(div);
+				sourcemmd += "subgraph " + sub[2] + "\n";
+			} else if (line.match(enddiv)){
+				sourcemmd += "end \n";
 			}
 		});
-		/*if (linkCounter == 0){
-			sourcemmd += currentH + "\n";	
-		}*/
-		console.log(sourcemmd)
 		if (mermaid.parse(sourcemmd) && sourcemmd != copymmd){
 			mermaid.render("graph-div", sourcemmd, function(svg){
+				/*elpreview.innerHTML = `
+				<div id="node-info">
+					<div style="background: #c7c7ff;">No Fijas</div>
+					<div style="background: #f4a4a4;">Fijas</div>
+					<div style="background: #eee;">Inexistentes</div>
+				</div>
+				`;*/
 				elpreview.innerHTML=svg
 				let clickNodes = document.getElementsByClassName("clickable")
-				console.log(clickNodes)
 				for (el of clickNodes) {
 					el.lastChild.addEventListener('click', function(element){
-						console.log(element.srcElement.innerText)
 						let head = "# " + element.srcElement.innerText;
  						let ln = lines.findIndex(element => element.includes(head))
 						jumpToLine(ln)

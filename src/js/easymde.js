@@ -1095,7 +1095,10 @@ function togglePreview(editor) {
             toolbar_div.className += ' disabled-for-preview';
         }
     }
-    cMDtoMMD(preview);
+    preview.innerHTML = "<div id='talos-info'></div>";
+    let talos = new Talos(parseText(easyMDE.value()), $('.editor-preview-full'), {});
+    preview.innerHTML += talos.compile('preview');
+    //cMDtoMMD(preview);
     /*preview.innerHTML = editor.options.previewRender(editor.value(), preview);*/
 
 }
@@ -2140,6 +2143,8 @@ EasyMDE.prototype.render = function (el) {
                 return "ymlblock";
             }else if (stream.sol() && stream.match(/^[a-z][a-z_0-9]*\:\s/gm) ) {
                 return "ymlkey";
+            }else if (stream.sol() && stream.match(/^#(\w|\d).*?$/gm) ) {
+                return "comment";
             }else if (stream.match(/\"[^"]+\"/m) ) {
                 return "string";
             }else if (stream.match(/[^(*|_)](\*|_)[^(*_)]+(\*|_)/m) ) {
