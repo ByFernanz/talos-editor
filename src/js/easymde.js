@@ -9,6 +9,13 @@ require('codemirror/addon/display/placeholder.js');
 require('codemirror/addon/display/autorefresh.js');
 require('codemirror/addon/selection/mark-selection.js');
 require('codemirror/addon/selection/active-line.js');
+
+require('codemirror/addon/search/search.js');
+require('codemirror/addon/scroll/annotatescrollbar.js');
+require('codemirror/addon/search/matchesonscrollbar.js');
+require('codemirror/addon/search/jump-to-line.js');
+require('codemirror/addon/dialog/dialog.js');
+
 require('codemirror/addon/search/searchcursor.js');
 require('codemirror/mode/gfm/gfm.js');
 require('codemirror/mode/xml/xml.js');
@@ -44,6 +51,7 @@ var bindings = {
     'redo': redo,
     'toggleSideBySide': toggleSideBySide,
     'toggleFullScreen': toggleFullScreen,
+    'toggleFind': toggleFind
 };
 
 var shortcuts = {
@@ -61,6 +69,7 @@ var shortcuts = {
     'togglePreview': 'Cmd-P',
     'toggleSideBySide': 'F9',
     'toggleFullScreen': 'F11',
+    'toggleFind': 'Ctrl-F'
 };
 
 var getBindingName = function (f) {
@@ -379,6 +388,10 @@ var saved_overflow = '';
 /**
  * Toggle full screen of the editor.
  */
+function toggleFind(){
+    easyMDE.codemirror.execCommand('find');
+}
+
 function toggleFullScreen(editor) {
     // Set fullscreen
     var cm = editor.codemirror;
@@ -819,7 +832,26 @@ function toggleUnorderedList(editor) {
     _toggleLine(cm, 'unordered-list', listStyle);
 }
 
+function str_replace(haystack, needle, replacement) {
+    var temp = haystack.split(needle);
+    return temp.join(replacement);
+  }
 
+function toggleReducir(){
+    var sizeactual = $('.CodeMirror-code').css('fontSize');
+    var size = str_replace(sizeactual, 'px', '');
+    size=parseInt(size)-3;
+    $('.CodeMirror-code').css({'fontSize': size});
+    easyMDE.codemirror.refresh();
+  }
+  
+  function toggleAumentar(){
+    var sizeactual = $('.CodeMirror-line').css('fontSize');
+    var size = str_replace(sizeactual, 'px', '');
+    size=parseInt(size)+3;
+    $('.CodeMirror-code').css({'fontSize': size});
+    easyMDE.codemirror.refresh();
+  }
 /**
  * Action for toggling ol.
  */
@@ -854,6 +886,17 @@ function drawLink(editor) {
     _replaceSelection(cm, stat.link, options.insertTexts.link, url);
 }
 
+
+function uploadCode(){
+    $('<input type="file">').on('change', function () {
+        let file = this.files[0];
+        var reader = new FileReader();
+        reader.readAsText(file);
+        reader.onload = function(){
+            easyMDE.value(reader.result);
+        }
+    }).click(); 
+  }
 /**
  * Action for drawing an img.
  */
@@ -1039,7 +1082,74 @@ function toggleSideBySide(editor) {
     cm.refresh();
 }
 
+function aboutInfo(){
+    Swal.fire({
+        title: '<strong>Talos Editor 1.0</strong>',
+        type: 'info',
+        html:
+          'Entorno de desarrollo de librojuegos, ' +
+          'compatible con <a href="https://github.com/lifelike/pangamebook">Pangamebook</a> ' +
+          'y <a href="https://pandoc.org/">Pandoc</a>.' +
+          '<br><br> <i>Creado por <br>Billy Y. Fernández</i>',
+        focusConfirm: false,
+        confirmButtonText:
+          'Aceptar'
+      })
+}
 
+function downloadCode(){
+    let textToWrite=easyMDE.value();
+    let fileNameToSaveAs="story.md";
+    	var textFileAsBlob = new Blob([textToWrite], {type:'text/plain'}); 
+    	var downloadLink = document.createElement("a");
+    	downloadLink.download = fileNameToSaveAs;
+    	downloadLink.innerHTML = "Download File";
+    	if (window.webkitURL != null)
+    	{
+    		//Chrome allows the link to be clicked
+    		//without actually adding it to the DOM.
+    		downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
+    	}
+    	else
+    	{
+    		//Firefox requires the link to be added to the DOM
+    		//before it can be clicked.
+    		downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+    		downloadLink.onclick = destroyClickedElement;
+    		downloadLink.style.display = "none";
+    		document.body.appendChild(downloadLink);
+    	}
+    
+    	downloadLink.click();
+}
+
+function compileCode() {
+    Swal.fire({
+        title: '<strong>Compilando...</strong>',
+        html:
+          "<div id='talos-compile'></div>",
+        focusConfirm: false,
+        confirmButtonText:
+          'Aceptar',
+        width: '70%'
+    })
+    let talosRev = new Talos(parseText(easyMDE.value()), $('#talos-compile'), {});
+    talosRev.compile('review');
+}
+
+function exportDoc() {
+    Swal.fire({
+        title: '<strong>Exportando...</strong>',
+        html:
+          "<div id='talos-compile'></div>",
+        focusConfirm: false,
+        confirmButtonText:
+          'Aceptar',
+        width: '70%'
+    })
+    let talosRev = new Talos(parseText(easyMDE.value()), $('#talos-compile'), {});
+    talosRev.compile();
+}
 /**
  * Preview action.
  */
@@ -1095,7 +1205,7 @@ function togglePreview(editor) {
             toolbar_div.className += ' disabled-for-preview';
         }
     }
-    preview.innerHTML = "<div id='talos-info'></div>";
+    preview.innerHTML = "";
     let talos = new Talos(parseText(easyMDE.value()), $('.editor-preview-full'), {});
     preview.innerHTML += talos.compile('preview');
     //cMDtoMMD(preview);
@@ -1583,7 +1693,7 @@ var toolbarBuiltInButtons = {
         action: togglePreview,
         className: 'fa fa-eye',
         noDisable: true,
-        title: 'Toggle Preview',
+        title: 'Vista previa',
         default: true,
     },
     'side-by-side': {
@@ -1592,7 +1702,7 @@ var toolbarBuiltInButtons = {
         className: 'fa fa-columns',
         noDisable: true,
         noMobile: true,
-        title: 'Toggle Side by Side',
+        title: 'Diagrama de flujo',
         default: true,
     },
     'fullscreen': {
@@ -1612,7 +1722,7 @@ var toolbarBuiltInButtons = {
         action: 'https://www.markdownguide.org/basic-syntax/',
         className: 'fa fa-question-circle',
         noDisable: true,
-        title: 'Markdown Guide',
+        title: 'Documentación',
         default: true,
     },
     'separator-5': {
@@ -1623,15 +1733,71 @@ var toolbarBuiltInButtons = {
         action: undo,
         className: 'fa fa-undo',
         noDisable: true,
-        title: 'Undo',
+        title: 'Deshacer',
     },
     'redo': {
         name: 'redo',
         action: redo,
         className: 'fa fa-repeat fa-redo',
         noDisable: true,
-        title: 'Redo',
+        title: 'Rehacer',
     },
+    'find': {
+        name: 'find',
+        action: toggleFind,
+        className: 'fa fa-search',
+        noDisable: true,
+        title: 'Buscar',
+    },
+    'upload-code': {
+        name: 'upload-code',
+        action: uploadCode,
+        className: 'fa fa-upload',
+        noDisable: true,
+        title: 'Cargar documento',
+    },
+    'download-code': {
+        name: 'download-code',
+        action: downloadCode,
+        className: 'fa fa-cloud-download',
+        noDisable: true,
+        title: 'Descargar documento',
+    },
+    'compile': {
+        name: 'compile',
+        action: compileCode,
+        className: 'fa fa-bug',
+        noDisable: true,
+        title: 'Compilar',
+    },
+    'export': {
+        name: 'export',
+        action: exportDoc,
+        className: 'fa fa-play',
+        noDisable: true,
+        title: 'Exportar',
+    },
+    'about': {
+        name: 'about',
+        action: aboutInfo,
+        className: 'fa fa-info-circle',
+        noDisable: true,
+        title: 'Acerca de Talos',
+    },
+    "reducir": {
+		name: "reducir",
+		action: toggleReducir,
+        className: "fa fa-search-minus",
+		title: "Reducir fuente",
+		default: true
+    },
+    "aumentar": {
+		name: "aumentar",
+		action: toggleAumentar,
+        className: "fa fa-search-plus",
+		title: "Aumentar fuente",
+		default: true
+  },
 };
 
 var insertTexts = {
@@ -2181,6 +2347,7 @@ EasyMDE.prototype.render = function (el) {
         inputStyle: (options.inputStyle != undefined) ? options.inputStyle : isMobile() ? 'contenteditable' : 'textarea',
         spellcheck: (options.nativeSpellcheck != undefined) ? options.nativeSpellcheck : true,
         autoRefresh: (options.autoRefresh != undefined) ? options.autoRefresh : false,
+        extraKeys: {"Alt-F": "findPersistent"}
     });
 
     this.codemirror.getScrollerElement().style.minHeight = options.minHeight;
@@ -2893,6 +3060,7 @@ EasyMDE.redo = redo;
 EasyMDE.togglePreview = togglePreview;
 EasyMDE.toggleSideBySide = toggleSideBySide;
 EasyMDE.toggleFullScreen = toggleFullScreen;
+EasyMDE.toggleFind = toggleFind;
 
 /**
  * Bind instance methods for exports.

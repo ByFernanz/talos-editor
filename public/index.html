@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="../dist/easymde.min.css">
     <script src="../dist/easymde.min.js"></script>
     <script src="js/mermaid.min.js"></script>
+	<script src="js/sweetalert2.js"></script>
 	<script src="js/jquery-3.6.0.min.js"></script>
     <script src="js/js-yaml.min.js"></script>
     <script src="js/markdown-it.min.js"></script>
@@ -105,7 +106,7 @@ are ignored.
 	const easyMDE = new EasyMDE({
     		autosave: {
         		enabled: true,
-        		uniqueId: "MyUniqueID",
+        		uniqueId: "talos-editor",
         		delay: 1000,
         		submit_delay: 5000,
         		timeFormat: {
@@ -123,7 +124,7 @@ are ignored.
         	spellChecker: false,
         	nativeSpellcheck: false,
         	//hideIcons: ["fullscreen", "bold","italic", "heading", "quote", "unordered-list","ordered-list","link","image"],
-			toolbar: ["preview", "side-by-side", "|", "undo", "redo", "|", "guide"],
+			toolbar: ["preview", "side-by-side", "|","upload-code", "download-code", "compile", "export", "|", "find", "undo", "redo", "|", "guide", "about"],
     		status: false
     		});
         easyMDE.toggleFullScreen();
