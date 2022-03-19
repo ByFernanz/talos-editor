@@ -1719,7 +1719,7 @@ var toolbarBuiltInButtons = {
     },
     'guide': {
         name: 'guide',
-        action: 'https://www.markdownguide.org/basic-syntax/',
+        action: 'https://byfernanz.github.io/talos-doc/',
         className: 'fa fa-question-circle',
         noDisable: true,
         title: 'Documentación',
@@ -2793,7 +2793,7 @@ EasyMDE.prototype.createToolbar = function (items) {
     var bar = document.createElement('div');
     bar.className = 'editor-toolbar';
     bar.innerHTML = '<img src="./robot_mini.png" class="robot"/>'
-    bar.innerHTML += '<span class="talos-editor">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Talos Editor </span><i class="separator">|</i>';
+    bar.innerHTML += '<span class="talos-editor">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Talos Editor&nbsp;</span><i class="separator">|</i>';
 
     var self = this;
 

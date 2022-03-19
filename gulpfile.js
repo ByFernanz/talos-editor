@@ -40,7 +40,7 @@ function scripts() {
         .pipe(buffer())
         .pipe(terser())
         .pipe(header(banner, {pkg: pkg}))
-        .pipe(gulp.dest('./dist/'));
+        .pipe(gulp.dest('./public/js'));
 }
 
 function styles() {
@@ -50,7 +50,7 @@ function styles() {
         .pipe(rename('easymde.min.css'))
         .pipe(buffer())
         .pipe(header(banner, {pkg: pkg}))
-        .pipe(gulp.dest('./dist/'));
+        .pipe(gulp.dest('./public/css'));
 }
 
 // Watch for file changes

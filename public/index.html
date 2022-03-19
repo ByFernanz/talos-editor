@@ -6,11 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Talos Editor</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bellefair&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../dist/easymde.min.css">
-    <script src="../dist/easymde.min.js"></script>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/easymde.min.css">
+    <script src="js/easymde.min.js"></script>
     <script src="js/mermaid.min.js"></script>
 	<script src="js/sweetalert2.js"></script>
 	<script src="js/jquery-3.6.0.min.js"></script>
@@ -27,79 +27,41 @@
 
 <body>
     <textarea>---
-title: Pangamebook Gamebook Example
-author: Pelle Nilsson
+title: Ejemplo De Librojuego Con Talos
+author: Billy Fernández
+output: html
 ---
+# Ejemplo De Librojuego
+Este es solo un ejemplo para dar a los nuevos usuarios una idea de por dónde empezar.
 
-# Pangamebook Gamebook Example
-This is just an example to give new users and idea where to start. See [Pandoc
-Getting Started Article](https://pandoc.org/getting-started.html) and
-[PangamebookREADME](README.md) for more information.
+Las líneas en la parte superior de este archivo son necesarias para agregar algunos metadatos para el libro, como el título (**title**), el autor (**author**) o el formato de salida (**output**, *Talos soporta html, docx, epub y pdf*).
 
-The lines at the very top of this file are needed to add some metadata
-for the book. Otherwise there are ugly warnings when creating EPUB files
-and possibly for other formats as well. Good to always include some
-lines like that. Normally they are invisible and should not show
-up in the output at all.
-
-# Introduction
-Sections with a header like this one will not be affected by the Pangamebook
-filter, as described in the README.
+# Introducción
+Las secciones con un encabezado como este (es decir, que inicien con mayúscula) no se verán afectadas por Talos.
 
 # 1
-This is where the story begins. That the header says just 1 like that means
-that Pangamebook will keep it as it is, and not move it around.
-From here you can move on to [second] or [third] section. If you read
-this in the original Markdown file (example.md) you can tell that
-the names of those sections are used as links (in square brackets).
-Running Pandoc with the Pangamebook filter will change the links
-to the correct numbers after shuffling all sections, so "second"
-and "third" might end up not being 2 or 3 at all.
+Aquí es donde comienza la historia. Que el encabezado diga *1* significa que Talos lo mantendrá como está y no lo moverá. Desde aquí puedes pasar a la [segunda] o [tercera] sección. Los nombres entre corchetes se usan como enlaces. Talos cambiará los enlaces a los números correctos después de barajar todas las secciones, por lo que *"segundo"* y *"tercero"* podrían no ser *2* o *3* en absoluto.
 
-# second
-This is the first header in the book that Pangamebook will see. Only
-lower-case letters. It could have had some digits and underscores in
-there as well, but anything else will make Pangamebook think it is
-not part of the story you want to shuffle or number.
-Here is another link to the third section: [third]. You
-can also go on to [some_other_section].
+# segunda
+A un encabezado como este se le asignará un número aleatorio. Debe tener solo letras minúsculas. Puede usar guiones bajos, de lo contrario Talos entenderá que esta sección no es parte de la historia que desea barajar o numerar. Aquí hay otro enlace a la tercera sección: [tercera]. También puede ir a [alguna_otra_seccion].
 
-# third
-Just another example section. Did you know that you can put images and tables
-and many other useful things in Pandoc Markdown files? There are no examples of
-that here, but it can be useful to know. Guess the story ends here as there are
-no links going out from this section.
+# tercera
+Solo otra sección de ejemplo. ¿Sabías que puede poner imágenes y tablas y muchas otras cosas útiles en los archivos de Talos? Esto es porque usa *Markdown*, un lenguaje de marcado de texto. No hay ejemplos de eso aquí, pero puede ser útil saberlo. La historia termina aquí ya que no hay enlaces que salgan de esta sección.
 
 # 5
-Another header that is already a number. If you paid attention to
-the description in the [README](README.md) you know that this
-section will not be shuffled with other sections. Also notice
-that the sections before ("second" and "third") will not be
-moved to after this one, and the sections below will not move
-to before. Many books might not need to ever have any fixed
-numbers like this, but it can be used to keep sections grouped.
-If you add two more sections before this there will be an
-error, because there is not room for four sections between
-1 and 5.
+Otro encabezado que es un número. Esta sección no se mezclará con las demás. También tenga en cuenta que las secciones anteriores (*"segunda"* y *"tercera"*) no se moverán después de esta, y las secciones siguientes no se pondrán antes. Es posible que muchos libros no necesiten tener números fijos como este, pero se puede usar para mantener las secciones agrupadas. Si agrega dos secciones más antes de esta, habrá un error, porque no hay espacio para cuatro secciones entre *1* y *5*.
 
-# some_other_section
-This is just to continue the example with something after
-section [5] that was fixed, and that this should always
-have number 6 or higher. The story ends in section [10].
+# alguna_otra_seccion
+Esto es solo para continuar con el ejemplo anterior. La sección numerada posterior a [5], siempre debería tener el número 6 o superior. La historia termina en la sección [10].
 
-# unreached
-There are not links to this section, but it should still
-show up.
+# inalcanzable
+No hay enlaces a esta sección, pero aún así aparecerá en el documento.
 
 # 10
-This ends the story. Most books have a best ending that has
-the highest number in the book. Setting this to 10 here leaves
-some margins if a few more sections are added before.
+Aquí termina la historia. El librojuego debe terminar con el número más alto. Establecer esto en 10 aquí deja algunos márgenes si se agregan algunas secciones más antes.
 
-# Epilogue
-Of course some non-gamebook sections like this can show up
-later in the book as well. Remember Capitalized Headings
-are ignored.
+# Epílogo
+Por supuesto, algunas secciones que no pertenecen al librojuego como esta también pueden aparecer más adelante en el libro. Recuerde que los encabezados que inician con mayúsculas se ignoran.
 </textarea>
     <div id="diagram"></div>
     <script>
