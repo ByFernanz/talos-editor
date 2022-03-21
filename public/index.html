@@ -118,7 +118,7 @@ Por supuesto, algunas secciones que no pertenecen al librojuego como esta tambi√
 		lines = sourcefile.split('\n');
 		let heading = /^#\s([a-z_0-9]*)(\s|$)/gm;
 		let link = /\[([^\[\]]+)\](?!\(|\:|{)/gm;
-		let div = /^(\:{3,})\s([a-z][a-z_0-9]*)\s{0,1}.*?$/m;
+		let div = /^(\:{3,})\s([A_Za-z][A-Za-z_0-9]*)\s{0,1}.*?$/m;
 		let enddiv = /^(\:{3,})\s*?[^a-z_0-9]*$/m;
 		let currentH="";
 
@@ -127,10 +127,14 @@ Por supuesto, algunas secciones que no pertenecen al librojuego como esta tambi√
   			normal: /^[a-z][a-z_0-9]*\s{0,1}(.*)$/m,
   			fixed: /^[0-9]+\s{0,1}(.*)$/m
 		};
+		let subgraph = {};
 		lines.forEach(function(line,index){
 			if(line.match(heading)){
 				let matches = Array.from(line.matchAll(heading), function (m){
 					currentH = m[1];
+					if (subgraph.enabled){
+						subgraph.nodes.push(currentH);
+					}
 					sourcemmd += currentH + "(" + currentH + ")\n";
 					sourcemmd += "class " + currentH + " clickable\n"
 					if (currentH.match(regexLib.normal)) {
@@ -147,20 +151,20 @@ Por supuesto, algunas secciones que no pertenecen al librojuego como esta tambi√
 				});	
 			} else if (line.match(div)){
 				let sub = line.match(div);
-				sourcemmd += "subgraph " + sub[2] + "\n";
+				subgraph.enabled = true;
+				subgraph.name = sub[2];
+				subgraph.nodes = [];
 			} else if (line.match(enddiv)){
+				sourcemmd += "subgraph " + subgraph.name + "\n";
+				for (node of subgraph.nodes){
+					sourcemmd += node + "\n";
+				}
 				sourcemmd += "end \n";
+				subgraph = {};
 			}
 		});
 		if (mermaid.parse(sourcemmd) && sourcemmd != copymmd){
 			mermaid.render("graph-div", sourcemmd, function(svg){
-				/*elpreview.innerHTML = `
-				<div id="node-info">
-					<div style="background: #c7c7ff;">No Fijas</div>
-					<div style="background: #f4a4a4;">Fijas</div>
-					<div style="background: #eee;">Inexistentes</div>
-				</div>
-				`;*/
 				elpreview.innerHTML=svg
 				let clickNodes = document.getElementsByClassName("clickable")
 				for (el of clickNodes) {

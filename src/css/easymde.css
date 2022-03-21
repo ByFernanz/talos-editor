@@ -470,7 +470,6 @@ span[data-img-src]::after {
     background: #e3e3e3;
     border-radius: 4px;
     color: darkblue;
-    text-transform: uppercase;
 }
 
 .cm-list {
