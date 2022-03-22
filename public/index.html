@@ -16,10 +16,15 @@
 	<script src="js/jquery-3.6.0.min.js"></script>
     <script src="js/js-yaml.min.js"></script>
     <script src="js/markdown-it.min.js"></script>
-    <script src="js/html2pdf.bundle.min.js"></script>
+	<script src="js/markdown-it-emoji.min.js"></script>
+
+	<script src='js/pdfmake.min.js'></script>
+	<script src='js/vfs_fonts.min.js'></script>
+	<script src='js/htmltopdfmake.js'></script>
     <script src="js/jszip.min.js"></script>
     <script src="js/ejs.min.js"></script>
     <script src="js/FileSaver.min.js"></script>
+	<script src="js/d3.min.js"></script>
     <script src="js/html-docx.js"></script>
     <script src="js/jepub.min.js"></script>
     <script src="js/talos.js"></script>
@@ -86,7 +91,7 @@ Por supuesto, algunas secciones que no pertenecen al librojuego como esta tambi√
         	spellChecker: false,
         	nativeSpellcheck: false,
         	//hideIcons: ["fullscreen", "bold","italic", "heading", "quote", "unordered-list","ordered-list","link","image"],
-			toolbar: ["preview", "side-by-side", "|","upload-code", "download-code", "compile", "export", "|", "find", "undo", "redo", "|", "guide", "about"],
+			toolbar: ["preview", "side-by-side", "|","upload-code", "download-code", "capture", "compile", "export", "|", "find", "undo", "redo", "|", "guide", "about"],
     		status: false
     		});
         easyMDE.toggleFullScreen();
@@ -96,7 +101,7 @@ Por supuesto, algunas secciones que no pertenecen al librojuego como esta tambi√
        mermaid.initialize({
 		   securityLevel: 'loose',
 		   theme: "neutral",
-		   flowchart: {htmlLabels: true}
+		   flowchart: {htmlLabels: true, useMaxWidth:false}
 		});
        
 		function jumpToLine(i) {
@@ -112,13 +117,15 @@ Por supuesto, algunas secciones que no pertenecen al librojuego como esta tambi√
        var sourcemmd;
 	   var copymmd="";
 	   var lines;
-        function cMDtoMMD (elpreview){
-        sourcemmd="graph TD\n";
+	   let trans;
+	   let copytrans;
+        function cMDtoMMD (elpreview, htmlLabels){
+        sourcemmd="graph TD\nclassDef sub fill:#fdc\n";
 		let sourcefile=easyMDE.value();
 		lines = sourcefile.split('\n');
 		let heading = /^#\s([a-z_0-9]*)(\s|$)/gm;
 		let link = /\[([^\[\]]+)\](?!\(|\:|{)/gm;
-		let div = /^(\:{3,})\s([A_Za-z][A-Za-z_0-9]*)\s{0,1}.*?$/m;
+		let div = /^(\:{3,})\s([\w]*)\s{0,1}.*?$/m;
 		let enddiv = /^(\:{3,})\s*?[^a-z_0-9]*$/m;
 		let currentH="";
 
@@ -154,18 +161,29 @@ Por supuesto, algunas secciones que no pertenecen al librojuego como esta tambi√
 				subgraph.enabled = true;
 				subgraph.name = sub[2];
 				subgraph.nodes = [];
-			} else if (line.match(enddiv)){
+			} else if (line.match(enddiv) && subgraph.enabled){
 				sourcemmd += "subgraph " + subgraph.name + "\n";
 				for (node of subgraph.nodes){
 					sourcemmd += node + "\n";
 				}
-				sourcemmd += "end \n";
+				sourcemmd += "end \nclass " + subgraph.name + " sub\n";
 				subgraph = {};
 			}
 		});
 		if (mermaid.parse(sourcemmd) && sourcemmd != copymmd){
 			mermaid.render("graph-div", sourcemmd, function(svg){
 				elpreview.innerHTML=svg
+				var svgs = d3.selectAll("#graph-div");
+  				svgs.each(function() {
+    				var svg = d3.select(this);
+    				svg.html("<g>" + svg.html() + "</g>");
+    				var inner = svg.select("g");
+    				var zoom = d3.zoom().on("zoom", function(event) {
+      					inner.attr("transform", event.transform);
+   				 	});
+    				svg.call(zoom);
+  				});
+			})
 				let clickNodes = document.getElementsByClassName("clickable")
 				for (el of clickNodes) {
 					el.lastChild.addEventListener('click', function(element){
@@ -174,7 +192,6 @@ Por supuesto, algunas secciones que no pertenecen al librojuego como esta tambi√
 						jumpToLine(ln)
 					})
 				}
-			})
 			copymmd = sourcemmd
 		}
 	}

@@ -1056,7 +1056,7 @@ function toggleSideBySide(editor) {
     }
 
     var sideBySideRenderingFunction = function () {
-        cMDtoMMD(preview);
+        cMDtoMMD(preview, true);
         /*var newValue = editor.options.previewRender(editor.value(), preview);
         if (newValue != null) {
             preview.innerHTML = newValue;
@@ -1069,7 +1069,7 @@ function toggleSideBySide(editor) {
 
     if (useSideBySideListener) {
         /*var newValue = editor.options.previewRender(editor.value(), preview);*/
-        cMDtoMMD(preview);
+        cMDtoMMD(preview, true);
         /*if (newValue != null) {
             preview.innerHTML = newValue;
         }*/
@@ -1082,9 +1082,29 @@ function toggleSideBySide(editor) {
     cm.refresh();
 }
 
+function saveSvg() {
+    name = "captura.svg"
+    var svgEl = document.getElementById('graph-div'); 
+    svgEl.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+    var svgData = svgEl.outerHTML;
+    var preface = '<?xml version="1.0" standalone="no"?>\r\n';
+    var svgBlob = new Blob([preface, svgData], {type:"image/svg+xml;charset=utf-8"});
+    var svgUrl = URL.createObjectURL(svgBlob);
+    var downloadLink = document.createElement("a");
+    downloadLink.href = svgUrl;
+    downloadLink.download = name;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+}
+
+function toggleCapture(){
+    saveSvg("captura");
+}
+
 function aboutInfo(){
     Swal.fire({
-        title: '<strong>Talos Editor 1.0</strong>',
+        title: '<strong>Talos Editor 1.1.1</strong>',
         type: 'info',
         html:
           'Entorno de desarrollo de librojuegos, ' +
@@ -1798,6 +1818,13 @@ var toolbarBuiltInButtons = {
 		title: "Aumentar fuente",
 		default: true
   },
+    "capture": {
+        name: "capture",
+        action: toggleCapture,
+        className: "fa fa-camera",
+        title: "Capturar diagrama",
+        default: true
+  },
 };
 
 var insertTexts = {
@@ -2285,7 +2312,10 @@ EasyMDE.prototype.render = function (el) {
     CodeMirror.defineMode("talos", function() {
     return {/*from   w w  w .  ja  va 2 s . co  m*/
         token: function(stream,state) {
-            if (stream.match(stream.sol() && /^#\s[a-z][a-z_0-9]*\s{0,1}(.*)$/m) ) {
+            if (stream.match(/(false|true|docx|html|pdf|epub)/)){
+                return "reserved";
+            }
+            else if (stream.match(stream.sol() && /^#\s[a-z][a-z_0-9]*\s{0,1}(.*)$/m) ) {
                 return "header-1";
             }else if (stream.sol() && stream.match(/^#\s[0-9]+\s{0,1}(.*)$/m) ) {
                 return "header-1-fix";
@@ -2311,11 +2341,9 @@ EasyMDE.prototype.render = function (el) {
                 return "ymlkey";
             }else if (stream.sol() && stream.match(/^#(\w|\d).*?$/gm) ) {
                 return "comment";
-            }else if (stream.match(/\"[^"]+\"/m) ) {
-                return "string";
             }else if (stream.match(/[^(*|_)](\*|_)[^(*_)]+(\*|_)/m) ) {
                 return "em";
-            }else if (stream.match(/[^**|__](\*\*|__)[^**|__]+(\*\*|__)/) ) {
+            }else if ((stream.sol() && stream.match(/(\*\*|__)[^**|__]+(\*\*|__)/)) || stream.match(/(\*\*|__)[^**|__]+(\*\*|__)/) ) {
                 return "strong";
             } else {
                 stream.next();
@@ -3027,7 +3055,7 @@ EasyMDE.prototype.value = function (val) {
             var wrapper = cm.getWrapperElement();
             var preview = wrapper.lastChild;
             /*preview.innerHTML = this.options.previewRender(val, preview);*/
-            cMDtoMMD(preview);
+            cMDtoMMD(preview, true);
         }
         return this;
     }
