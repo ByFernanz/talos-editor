@@ -824,7 +824,7 @@ function toggleHeading3(editor) {
 function toggleUnorderedList(editor) {
     var cm = editor.codemirror;
 
-    var listStyle = '*'; // Default
+    var listStyle = '-'; // Default
     if (['-', '+', '*'].includes(editor.options.unorderedListStyle)) {
         listStyle = editor.options.unorderedListStyle;
     }
@@ -876,14 +876,8 @@ function drawLink(editor) {
     var stat = getState(cm);
     var options = editor.options;
     var url = 'https://';
-    if (options.promptURLs) {
-        url = prompt(options.promptTexts.link, url);
-        if (!url) {
-            return false;
-        }
-        url = escapePromptURL(url);
-    }
-    _replaceSelection(cm, stat.link, options.insertTexts.link, url);
+
+    _replaceSelection(cm, stat.link, options.insertTexts.link);
 }
 
 
@@ -1000,6 +994,41 @@ function redo(editor) {
     cm.focus();
 }
 
+function zoomIn() {
+    d3.select('svg')
+        .transition()
+        .call(zoom.scaleBy, 2);
+}
+
+function zoomOut() {
+    d3.select('svg')
+        .transition()
+        .call(zoom.scaleBy, 0.5);
+}
+
+function resetZoom() {
+    d3.select('svg')
+        .transition()
+        .call(zoom.scaleTo, 1);
+}
+
+function center() {
+    d3.select('svg')
+        .transition()
+        .call(zoom.translateTo, 0.5 * width, 0.5 * height);
+}
+
+function panLeft() {
+    d3.select('svg')
+        .transition()
+        .call(zoom.translateBy, -50, 0);
+}
+
+function panRight() {
+    d3.select('svg')
+        .transition()
+        .call(zoom.translateBy, 50, 0);
+}
 
 /**
  * Toggle side by side preview
@@ -1104,7 +1133,7 @@ function toggleCapture(){
 
 function aboutInfo(){
     Swal.fire({
-        title: '<strong>Talos Editor 1.1.1</strong>',
+        title: '<strong>Talos Editor 1.2.0</strong>',
         type: 'info',
         html:
           'Entorno de desarrollo de librojuegos, ' +
@@ -1581,14 +1610,14 @@ var toolbarBuiltInButtons = {
         name: 'bold',
         action: toggleBold,
         className: 'fa fa-bold',
-        title: 'Bold',
+        title: 'Añadir negrita',
         default: true,
     },
     'italic': {
         name: 'italic',
         action: toggleItalic,
         className: 'fa fa-italic',
-        title: 'Italic',
+        title: ' Añadir cursiva',
         default: true,
     },
     'strikethrough': {
@@ -1616,11 +1645,11 @@ var toolbarBuiltInButtons = {
         className: 'fa fa-header fa-heading header-bigger',
         title: 'Bigger Heading',
     },
-    'heading-1': {
-        name: 'heading-1',
+    'heading-1a': {
+        name: 'heading-1a',
         action: toggleHeading1,
-        className: 'fa fa-header fa-heading header-1',
-        title: 'Big Heading',
+        className: 'fa fa-slack',
+        title: 'Crear/quitar sección',
     },
     'heading-2': {
         name: 'heading-2',
@@ -1654,7 +1683,7 @@ var toolbarBuiltInButtons = {
         name: 'unordered-list',
         action: toggleUnorderedList,
         className: 'fa fa-list-ul',
-        title: 'Generic List',
+        title: 'Generar lista',
         default: true,
     },
     'ordered-list': {
@@ -1677,7 +1706,7 @@ var toolbarBuiltInButtons = {
         name: 'link',
         action: drawLink,
         className: 'fa fa-link',
-        title: 'Create Link',
+        title: 'Crear enlace',
         default: true,
     },
     'image': {
@@ -1825,10 +1854,24 @@ var toolbarBuiltInButtons = {
         title: "Capturar diagrama",
         default: true
   },
+  "zoom-out": {
+        name: "zoom-out",
+        action: zoomOut,
+        className: "fa fa-search-minus",
+        title: "Alejar diagrama",
+        default: true
+  },
+  "zoom-in": {
+        name: "zoom-in",
+        action: zoomIn,
+        className: "fa fa-search-plus",
+        title: "Acercar diagrama",
+        default: true
+  },
 };
 
 var insertTexts = {
-    link: ['[', '](#url#)'],
+    link: ['[', ']'],
     image: ['![](', '#url#)'],
     uploadedImage: ['![](#url#)', ''],
     // uploadedImage: ['![](#url#)\n', ''], // TODO: New line insertion doesn't work here.
@@ -2406,6 +2449,7 @@ EasyMDE.prototype.render = function (el) {
     }
     if (options.status !== false) {
         this.gui.statusbar = this.createStatusbar();
+        this.gui.toolbar.appendChild(this.gui.statusbar);
     }
     if (options.autosave != undefined && options.autosave.enabled === true) {
         this.autosave(); // use to load localstorage content

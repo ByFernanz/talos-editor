@@ -17,7 +17,6 @@
     <script src="js/js-yaml.min.js"></script>
     <script src="js/markdown-it.min.js"></script>
 	<script src="js/markdown-it-emoji.min.js"></script>
-
 	<script src='js/pdfmake.min.js'></script>
 	<script src='js/vfs_fonts.min.js'></script>
 	<script src='js/htmltopdfmake.js'></script>
@@ -89,9 +88,10 @@ Por supuesto, algunas secciones que no pertenecen al librojuego como esta tambi√
         		text: "Autoguardado: "
     		},
         	spellChecker: false,
+			status: ["words", "lines"],
         	nativeSpellcheck: false,
         	//hideIcons: ["fullscreen", "bold","italic", "heading", "quote", "unordered-list","ordered-list","link","image"],
-			toolbar: ["preview", "side-by-side", "|","upload-code", "download-code", "capture", "compile", "export", "|", "find", "undo", "redo", "|", "guide", "about"],
+			toolbar: ["preview", "side-by-side", "|", "heading-1a","link", "bold", "italic", "unordered-list", "|", "upload-code", "download-code", "capture", "compile", "export", "|", "find", "zoom-out", "zoom-in", "undo", "redo", "|", "guide", "about"],
     		status: false
     		});
         easyMDE.toggleFullScreen();
@@ -119,6 +119,47 @@ Por supuesto, algunas secciones que no pertenecen al librojuego como esta tambi√
 	   var lines;
 	   let trans;
 	   let copytrans;
+	   var k=1.0;
+	   var x=0.1;
+	   var y=0.1;
+	   var firstUp = true;
+
+
+
+	   /*****************************************************/
+	   var zoom; let data = [], width = 600, height = 400, numPoints = 100;
+
+
+function initZoom() {
+	if(firstUp){
+		zoom = d3.zoom()
+			.scaleExtent([1, 6])
+			.on('zoom', handleZoom)
+			d3.select('#graph-div')
+			//.attr('transform', `translate(0, 0) scale(1)`)
+			.call(zoom);
+		firstUp = false;
+	}else{
+			zoom = d3.zoom()
+				.scaleExtent([1, 6])
+				.on('zoom', handleZoom)
+			d3.select('#graph-div')
+				.call(zoom)
+				.call(zoom.transform, d3.zoomIdentity.translate(x, y).scale(k));
+	}
+	
+}
+
+function handleZoom(e) {
+	d3.select('svg g')
+			.attr('transform', e.transform);
+		//.attr('transform', `translate(${x}, ${y})scale(${k})`);
+		//.attr('transform', e.transform);
+		k = e.transform.k;
+		x = e.transform.x;
+		y = e.transform.y;
+}
+	   /*****************************************************/
         function cMDtoMMD (elpreview, htmlLabels){
         sourcemmd="graph TD\nclassDef sub fill:#fdc\n";
 		let sourcefile=easyMDE.value();
@@ -126,6 +167,7 @@ Por supuesto, algunas secciones que no pertenecen al librojuego como esta tambi√
 		let heading = /^#\s([a-z_0-9]*)(\s|$)/gm;
 		let link = /\[([^\[\]]+)\](?!\(|\:|{)/gm;
 		let div = /^(\:{3,})\s([\w]*)\s{0,1}.*?$/m;
+		let ignored = /^#\s[A-Z].*$/m;
 		let enddiv = /^(\:{3,})\s*?[^a-z_0-9]*$/m;
 		let currentH="";
 
@@ -173,16 +215,13 @@ Por supuesto, algunas secciones que no pertenecen al librojuego como esta tambi√
 		if (mermaid.parse(sourcemmd) && sourcemmd != copymmd){
 			mermaid.render("graph-div", sourcemmd, function(svg){
 				elpreview.innerHTML=svg
-				var svgs = d3.selectAll("#graph-div");
-  				svgs.each(function() {
-    				var svg = d3.select(this);
-    				svg.html("<g>" + svg.html() + "</g>");
-    				var inner = svg.select("g");
-    				var zoom = d3.zoom().on("zoom", function(event) {
-      					inner.attr("transform", event.transform);
-   				 	});
-    				svg.call(zoom);
-  				});
+
+  				/***********************************************************************/
+				
+					initZoom();
+
+				/************************************************************************/
+
 			})
 				let clickNodes = document.getElementsByClassName("clickable")
 				for (el of clickNodes) {
