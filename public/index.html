@@ -10,6 +10,7 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/easymde.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
     <script src="js/easymde.min.js"></script>
     <script src="js/mermaid.min.js"></script>
 	<script src="js/sweetalert2.js"></script>
@@ -90,9 +91,9 @@ Por supuesto, algunas secciones que no pertenecen al librojuego como esta tambi√
         	spellChecker: false,
 			status: ["words", "lines"],
         	nativeSpellcheck: false,
+        	autoDownloadFontAwesome: false,
         	//hideIcons: ["fullscreen", "bold","italic", "heading", "quote", "unordered-list","ordered-list","link","image"],
-			toolbar: ["preview", "side-by-side", "|", "heading-1a","link", "bold", "italic", "unordered-list", "|", "upload-code", "download-code", "capture", "compile", "export", "|", "find", "zoom-out", "zoom-in", "undo", "redo", "|", "guide", "about"],
-    		status: false
+			toolbar: ["preview", "side-by-side", "|", "heading-1a","link", "bold", "italic", "unordered-list", "|", "new-file", "upload-code", "download-code", "capture", "compile", "export", "|", "find", "zoom-out", "zoom-in", "undo", "redo", "|", "guide", "about"],
     		});
         easyMDE.toggleFullScreen();
 		easyMDE.toggleSideBySide();
@@ -167,7 +168,7 @@ function handleZoom(e) {
 		let heading = /^#\s([a-z_0-9]*)(\s|$)/gm;
 		let link = /\[([^\[\]]+)\](?!\(|\:|{)/gm;
 		let div = /^(\:{3,})\s([\w]*)\s{0,1}.*?$/m;
-		let ignored = /^#\s[A-Z].*$/m;
+		let ignored = /^#\s([A-Z].*)$/m;
 		let enddiv = /^(\:{3,})\s*?[^a-z_0-9]*$/m;
 		let currentH="";
 
@@ -178,7 +179,14 @@ function handleZoom(e) {
 		};
 		let subgraph = {};
 		lines.forEach(function(line,index){
-			if(line.match(heading)){
+			if(line.match(ignored)){
+					currentH = "0";
+					if (subgraph.enabled){
+						subgraph.nodes.push(currentH);
+					}
+					sourcemmd += "0[ignoradas]\n";
+					sourcemmd += "style 0 color:#fff,fill:#000\n";
+		}	else if(line.match(heading)){
 				let matches = Array.from(line.matchAll(heading), function (m){
 					currentH = m[1];
 					if (subgraph.enabled){

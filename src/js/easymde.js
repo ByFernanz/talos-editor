@@ -388,6 +388,24 @@ var saved_overflow = '';
 /**
  * Toggle full screen of the editor.
  */
+
+function newFile(){
+    Swal.fire({
+        title: 'El documento anterior será eliminado',
+        showDenyButton: false,
+        showCancelButton: true,
+        confirmButtonText: 'Nuevo',
+        cancelButtonText: 'Cancelar',
+}).then((result) => {
+  /* Read more about isConfirmed, isDenied below */
+  if (result.value) {
+    Swal.fire('Documento creado!', '', 'success')
+    easyMDE.value('---\ntitle: Sin Título\nauthor: Anónimo\noutput: html\n---\n\n# 1\n\x3C!-- Aquí inicia el librojuego-->');
+  }
+})
+    //easyMDE.value('---\ntitle: Sin Título\nauthor: Anónimo\noutput: html\n---\n\n# 1\n\x3C!-- Aquí inicia el librojuego-->');
+}
+
 function toggleFind(){
     easyMDE.codemirror.execCommand('find');
 }
@@ -1133,7 +1151,7 @@ function toggleCapture(){
 
 function aboutInfo(){
     Swal.fire({
-        title: '<strong>Talos Editor 1.2.0</strong>',
+        title: '<strong>Talos Editor 1.3.0</strong>',
         type: 'info',
         html:
           'Entorno de desarrollo de librojuegos, ' +
@@ -1866,6 +1884,13 @@ var toolbarBuiltInButtons = {
         action: zoomIn,
         className: "fa fa-search-plus",
         title: "Acercar diagrama",
+        default: true
+  },
+  "new-file": {
+        name: "new-file",
+        action: newFile,
+        className: "fa fa-file",
+        title: "Nuevo documento",
         default: true
   },
 };

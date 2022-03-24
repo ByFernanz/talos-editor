@@ -231,11 +231,11 @@
 }
 
 .editor-statusbar .lines:before {
-    content: 'lines: '
+    content: 'LÍNEAS: '
 }
 
 .editor-statusbar .words:before {
-    content: 'words: '
+    content: 'PALABRAS: '
 }
 
 .editor-statusbar .characters:before {
@@ -636,4 +636,14 @@ rect {
 
 h2 {
     text-align: center;
+}
+.editor-statusbar{
+font-family: 'Open Sans';
+    /*padding: 8px 10px;*/
+    padding-top: 0.5em;
+    font-size: 12px;
+    /*color: green;*/
+    text-align: right;
+    font-weight: 600;
+    float: right;
 }
