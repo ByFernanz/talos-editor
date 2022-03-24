@@ -401,6 +401,12 @@ function newFile(){
   if (result.value) {
     Swal.fire('Documento creado!', '', 'success')
     easyMDE.value('---\ntitle: Sin Título\nauthor: Anónimo\noutput: html\n---\n\n# 1\n\x3C!-- Aquí inicia el librojuego-->');
+    zoom = d3.zoom()
+                .scaleExtent([1, 6])
+                .on('zoom', handleZoom)
+            d3.select('#graph-div')
+                .call(zoom)
+                .call(zoom.transform, d3.zoomIdentity.translate(0, 0).scale(1));
   }
 })
     //easyMDE.value('---\ntitle: Sin Título\nauthor: Anónimo\noutput: html\n---\n\n# 1\n\x3C!-- Aquí inicia el librojuego-->');
@@ -834,7 +840,13 @@ function toggleHeading3(editor) {
     var cm = editor.codemirror;
     _toggleHeading(cm, undefined, 3);
 }
-
+function numeradas(){
+    if(easyMDE.codemirror.options.lineNumbers){
+        easyMDE.codemirror.setOption('lineNumbers', false);
+    }else{
+        easyMDE.codemirror.setOption('lineNumbers', true);
+    }
+}
 
 /**
  * Action for toggling ul.
@@ -1022,6 +1034,14 @@ function zoomOut() {
     d3.select('svg')
         .transition()
         .call(zoom.scaleBy, 0.5);
+    if (k == 1 && (x != 0 || y != 0)){
+        zoom = d3.zoom()
+                .scaleExtent([1, 6])
+                .on('zoom', handleZoom)
+            d3.select('#graph-div')
+                .call(zoom)
+                .call(zoom.transform, d3.zoomIdentity.translate(0, 0).scale(1));
+    }
 }
 
 function resetZoom() {
@@ -1744,7 +1764,7 @@ var toolbarBuiltInButtons = {
         name: 'table',
         action: drawTable,
         className: 'fa fa-table',
-        title: 'Insert Table',
+        title: 'Insertar Tabla',
     },
     'horizontal-rule': {
         name: 'horizontal-rule',
@@ -1893,6 +1913,13 @@ var toolbarBuiltInButtons = {
         title: "Nuevo documento",
         default: true
   },
+  "numbers": {
+        name: "numbers",
+        action: numeradas,
+        className: "fa fa-list-ol",
+        title: "Líneas numeradas",
+        default: true
+  },
 };
 
 var insertTexts = {
@@ -1900,7 +1927,7 @@ var insertTexts = {
     image: ['![](', '#url#)'],
     uploadedImage: ['![](#url#)', ''],
     // uploadedImage: ['![](#url#)\n', ''], // TODO: New line insertion doesn't work here.
-    table: ['', '\n\n| Column 1 | Column 2 | Column 3 |\n| -------- | -------- | -------- |\n| Text     | Text     | Text     |\n\n'],
+    table: ['', '\n\n| Columna 1 | Columna 2 | Columna 3 |\n| --------- | --------- | --------- |\n| Texto     | Texto     | Texto     |\n\n'],
     horizontalRule: ['', '\n\n-----\n\n'],
 };
 
