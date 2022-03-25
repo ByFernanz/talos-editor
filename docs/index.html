@@ -6,9 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Talos Editor</title>
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="css/opensans.css">
     <link rel="stylesheet" href="css/easymde.min.css">
     <link rel="stylesheet" href="css/font-awesome.min.css">
     <script src="js/easymde.min.js"></script>
@@ -70,6 +68,14 @@ Por supuesto, algunas secciones que no pertenecen al librojuego como esta tambi√
 </textarea>
     <div id="diagram"></div>
     <script>
+    var status = false;
+    var toolbar = ["preview","new-file", "upload-code", "download-code", "compile", "export", "find", "undo", "redo", "guide"];
+    if (!($(window).width() < 480 || $(window).height() < 480)) {
+    		status = ["words", "lines"]
+    		status = status.split(',')
+    		toolbar = ["preview", "side-by-side", "|", "heading-1a","link", "bold", "italic", "unordered-list", "table", "|", "new-file", "upload-code", "download-code", "capture", "compile", "export", "|", "numbers", "find", "zoom-out", "zoom-in", "undo", "redo", "|", "guide", "about"];
+    		
+		} 
 	const easyMDE = new EasyMDE({
     		autosave: {
         		enabled: true,
@@ -89,15 +95,17 @@ Por supuesto, algunas secciones que no pertenecen al librojuego como esta tambi√
         		text: "Autoguardado: "
     		},
         	spellChecker: false,
-			status: ["words", "lines"],
+			status: status.split(','),
         	nativeSpellcheck: false,
         	autoDownloadFontAwesome: false,
-        	//hideIcons: ["fullscreen", "bold","italic", "heading", "quote", "unordered-list","ordered-list","link","image"],
-			toolbar: ["preview", "side-by-side", "|", "heading-1a","link", "bold", "italic", "unordered-list", "table", "|", "new-file", "upload-code", "download-code", "capture", "compile", "export", "|", "numbers", "find", "zoom-out", "zoom-in", "undo", "redo", "|", "guide", "about"],
+			toolbar: toolbar,
     		});
         easyMDE.toggleFullScreen();
-		easyMDE.toggleSideBySide();
-       easyMDE.codemirror.setOption('lineNumbers', true);
+        if (!($(window).width() < 480 || $(window).height() < 480)) {
+    		//small screen, load other JS files
+    		easyMDE.toggleSideBySide();
+    		easyMDE.codemirror.setOption('lineNumbers', true);
+		} 
 	   easyMDE.codemirror.setOption('styleActiveLine', true);
        mermaid.initialize({
 		   securityLevel: 'loose',
@@ -120,10 +128,9 @@ Por supuesto, algunas secciones que no pertenecen al librojuego como esta tambi√
 	   var lines;
 	   let trans;
 	   let copytrans;
-	   var k=1.0;
-	   var x=0.1;
-	   var y=0.1;
-	   var firstUp = true;
+	   var k=1;
+	   var x=0;
+	   var y=0;
 
 
 
@@ -131,31 +138,18 @@ Por supuesto, algunas secciones que no pertenecen al librojuego como esta tambi√
 	   var zoom; let data = [], width = 600, height = 400, numPoints = 100;
 
 
-function initZoom() {
-	if(firstUp){
-		zoom = d3.zoom()
-			.scaleExtent([1, 6])
-			.on('zoom', handleZoom)
-			d3.select('#graph-div')
-			//.attr('transform', `translate(0, 0) scale(1)`)
-			.call(zoom);
-		firstUp = false;
-	}else{
+function initZoom() {			
 			zoom = d3.zoom()
 				.scaleExtent([1, 6])
 				.on('zoom', handleZoom)
 			d3.select('#graph-div')
 				.call(zoom)
 				.call(zoom.transform, d3.zoomIdentity.translate(x, y).scale(k));
-	}
-	
 }
 
 function handleZoom(e) {
 	d3.select('svg g')
-			.attr('transform', e.transform);
-		//.attr('transform', `translate(${x}, ${y})scale(${k})`);
-		//.attr('transform', e.transform);
+		.attr('transform', e.transform);
 		k = e.transform.k;
 		x = e.transform.x;
 		y = e.transform.y;
@@ -225,9 +219,7 @@ function handleZoom(e) {
 				elpreview.innerHTML=svg
 
   				/***********************************************************************/
-				
-					initZoom();
-
+  				initZoom();
 				/************************************************************************/
 
 			})

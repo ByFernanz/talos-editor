@@ -211,6 +211,27 @@
     .editor-toolbar i.no-mobile {
         display: none;
     }
+    .editor-toolbar span.no-mobile {
+        display: none;
+    }
+    .editor-toolbar button.no-mobile {
+        display: none;
+    }
+    h1{
+        font-size: 1.3em!important;
+    }
+    h2{
+        font-size: 1em!important;
+    }
+    .talos-compile{
+        font-size: 0.8em!important;
+    }
+    .swal2-modal {
+        width: 95%!important;
+    }
+    #swal2-content {
+        font-size:  0.8em!important;
+    }
 }
 
 .editor-statusbar {

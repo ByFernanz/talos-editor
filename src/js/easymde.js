@@ -1647,16 +1647,18 @@ var toolbarBuiltInButtons = {
     'bold': {
         name: 'bold',
         action: toggleBold,
-        className: 'fa fa-bold',
+        className: 'fa fa-bold no-mobile',
         title: 'Añadir negrita',
         default: true,
+        oMobile: true,
     },
     'italic': {
         name: 'italic',
         action: toggleItalic,
-        className: 'fa fa-italic',
+        className: 'fa fa-italic no-mobile',
         title: ' Añadir cursiva',
         default: true,
+        oMobile: true,
     },
     'strikethrough': {
         name: 'strikethrough',
@@ -1684,10 +1686,11 @@ var toolbarBuiltInButtons = {
         title: 'Bigger Heading',
     },
     'heading-1a': {
-        name: 'heading-1a',
+        name: 'heading-1a no-mobile',
         action: toggleHeading1,
         className: 'fa fa-slack',
         title: 'Crear/quitar sección',
+        noMobile: true,
     },
     'heading-2': {
         name: 'heading-2',
@@ -1718,18 +1721,20 @@ var toolbarBuiltInButtons = {
         default: true,
     },
     'unordered-list': {
-        name: 'unordered-list',
+        name: 'unordered-list no-mobile',
         action: toggleUnorderedList,
         className: 'fa fa-list-ul',
         title: 'Generar lista',
         default: true,
+        noMobile: true,
     },
     'ordered-list': {
         name: 'ordered-list',
         action: toggleOrderedList,
-        className: 'fa fa-list-ol',
+        className: 'fa fa-list-ol no-mobile',
         title: 'Numbered List',
         default: true,
+        noMobile: true,
     },
     'clean-block': {
         name: 'clean-block',
@@ -1743,9 +1748,10 @@ var toolbarBuiltInButtons = {
     'link': {
         name: 'link',
         action: drawLink,
-        className: 'fa fa-link',
+        className: 'fa fa-link no-mobile',
         title: 'Crear enlace',
         default: true,
+        noMobile: true,
     },
     'image': {
         name: 'image',
@@ -1763,8 +1769,9 @@ var toolbarBuiltInButtons = {
     'table': {
         name: 'table',
         action: drawTable,
-        className: 'fa fa-table',
+        className: 'fa fa-table no-mobile',
         title: 'Insertar Tabla',
+        noMobile: true
     },
     'horizontal-rule': {
         name: 'horizontal-rule',
@@ -1867,43 +1874,49 @@ var toolbarBuiltInButtons = {
     'about': {
         name: 'about',
         action: aboutInfo,
-        className: 'fa fa-info-circle',
+        className: 'fa fa-info-circle no-mobile',
         noDisable: true,
+        noMobile: true,
         title: 'Acerca de Talos',
     },
     "reducir": {
 		name: "reducir",
 		action: toggleReducir,
-        className: "fa fa-search-minus",
+        className: "fa fa-search-minus no-mobile",
 		title: "Reducir fuente",
+        noMobile: true,
 		default: true
     },
     "aumentar": {
 		name: "aumentar",
 		action: toggleAumentar,
-        className: "fa fa-search-plus",
+        className: "fa fa-search-plus no-mobile",
 		title: "Aumentar fuente",
+        noMobile: true,
 		default: true
   },
     "capture": {
         name: "capture",
         action: toggleCapture,
-        className: "fa fa-camera",
+        className: "fa fa-camera no-mobile",
         title: "Capturar diagrama",
+        noMobile: true,
         default: true
   },
   "zoom-out": {
         name: "zoom-out",
         action: zoomOut,
-        className: "fa fa-search-minus",
+        className: "fa fa-search-minus no-mobile",
         title: "Alejar diagrama",
+        noMobile: true,
         default: true
   },
   "zoom-in": {
         name: "zoom-in",
         action: zoomIn,
-        className: "fa fa-search-plus",
+        className: "fa fa-search-plus no-mobile",
         title: "Acercar diagrama",
+        noMobile: true,
         default: true
   },
   "new-file": {
@@ -1916,8 +1929,9 @@ var toolbarBuiltInButtons = {
   "numbers": {
         name: "numbers",
         action: numeradas,
-        className: "fa fa-list-ol",
+        className: "fa fa-list-ol no-mobile",
         title: "Líneas numeradas",
+        noMobile: true,
         default: true
   },
 };
@@ -2917,7 +2931,7 @@ EasyMDE.prototype.createToolbar = function (items) {
     var bar = document.createElement('div');
     bar.className = 'editor-toolbar';
     bar.innerHTML = '<img src="./robot_mini.png" class="robot"/>'
-    bar.innerHTML += '<span class="talos-editor">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Talos Editor&nbsp;</span><i class="separator">|</i>';
+    bar.innerHTML += '<span class="talos-editor">&nbsp;&nbsp;&nbsp;&nbsp;<span class="no-mobile">&nbsp;Talos Editor&nbsp;</span></span><i class="separator">|</i>';
 
     var self = this;
 
