@@ -75,7 +75,16 @@ Por supuesto, algunas secciones que no pertenecen al librojuego como esta tambi√
     		status = status.split(',')
     		toolbar = ["preview", "side-by-side", "|", "heading-1a","link", "bold", "italic", "unordered-list", "table", "|", "new-file", "upload-code", "download-code", "capture", "compile", "export", "|", "numbers", "find", "zoom-out", "zoom-in", "undo", "redo", "|", "guide", "about"];
     		
-		} 
+		} else {
+			$('.editor-toolbar i.no-mobile').css('display', 'none');
+			$('.editor-toolbar span.no-mobile').css('display', 'none');
+			$('.editor-toolbar button.no-mobile').css('display', 'none');
+			$('h1').css('font-size', '1.3em!important');
+			$('h2').css('font-size', '1em!important');
+			$('.talos-compile').css('font-size', '0.8em!important');
+			$('.swal2-modal').css('width', '95%!important');
+			$('#swal2-content').css('font-size', '0.8em!important');
+		}
 	const easyMDE = new EasyMDE({
     		autosave: {
         		enabled: true,

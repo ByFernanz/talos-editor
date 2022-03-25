@@ -1171,7 +1171,7 @@ function toggleCapture(){
 
 function aboutInfo(){
     Swal.fire({
-        title: '<strong>Talos Editor 1.3.0</strong>',
+        title: '<strong>Talos Editor 1.4.0</strong>',
         type: 'info',
         html:
           'Entorno de desarrollo de librojuegos, ' +
