@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="css/font-awesome.min.css">
     <script src="js/easymde.min.js"></script>
     <script src="js/mermaid.min.js"></script>
+    <script src="js/html2canvas.min.js"></script>
 	<script src="js/sweetalert2.js"></script>
 	<script src="js/jquery-3.6.0.min.js"></script>
     <script src="js/js-yaml.min.js"></script>
@@ -66,9 +67,11 @@ Aquí termina la historia. El librojuego debe terminar con el número más alto.
 # Epílogo
 Por supuesto, algunas secciones que no pertenecen al librojuego como esta también pueden aparecer más adelante en el libro. Recuerde que los encabezados que inician con mayúsculas se ignoran.
 </textarea>
-    <div id="diagram"></div>
+	<script src="js/popper.min.js"></script>
+	<script src="js/tippy-bundle.umd.min.js"></script>
     <script>
     var status = false;
+	var tippyInst = [];
     var toolbar = ["preview","new-file", "upload-code", "download-code", "compile", "export", "find", "undo", "redo"];
     if (!($(window).width() < 480 || $(window).height() < 480)) {
     		status = ["words", "lines"]
@@ -148,6 +151,39 @@ Por supuesto, algunas secciones que no pertenecen al librojuego como esta tambi�
 	   /*****************************************************/
 	   var zoom; let data = [], width = 600, height = 400, numPoints = 100;
 
+function createTooltip(){
+	let story = parseText(easyMDE.value())
+				let index = 0;
+				if(tippyInst != []){
+					for (el of tippyInst){
+						for (en of el){
+							en.destroy();	
+						}
+					}
+					tippyInst = [];
+				}
+				for (el of story.blocks){
+					if (el.type == "fixed" || el.type == "normal"){
+						let procYML = extractYAML(el.lines);
+						yaml = jsyaml.load(procYML.ymlBlock);
+						if (yaml){
+							if(yaml.description){
+								let e = $("#graph-div").find('g[id^="flowchart-'+el.name+'-"]')
+								if(e){
+									let inst = tippy("#" + e[0].id, {
+    									content: yaml.description,
+    									animation: 'fade',
+    									theme: 'translucent',
+   										followCursor: true,
+									});
+									tippyInst.push(inst)
+								}
+							}
+						}
+					}
+					index++;
+				}
+}
 
 function initZoom() {			
 			zoom = d3.zoom()
@@ -166,9 +202,9 @@ function handleZoom(e) {
 		y = e.transform.y;
 }
 	   /*****************************************************/
-        function cMDtoMMD (elpreview, htmlLabels){
+        function cMDtoMMD (elpreview, htmlLabels = true, sourcefile = easyMDE.value(), callback = null){
         sourcemmd="graph TD\nclassDef sub fill:#fdc\n";
-		let sourcefile=easyMDE.value();
+		//let sourcefile=easyMDE.value();
 		lines = sourcefile.split('\n');
 		let heading = /^#\s([a-z_0-9]*)(\s|$)/gm;
 		let link = /\[([^\[\]]+)\](?!\(|\:|{)/gm;
@@ -228,10 +264,15 @@ function handleZoom(e) {
 		if (mermaid.parse(sourcemmd) && sourcemmd != copymmd){
 			mermaid.render("graph-div", sourcemmd, function(svg){
 				elpreview.innerHTML=svg
+				if (callback){
+					callback();
+				}
 
   				/***********************************************************************/
   				initZoom();
 				/************************************************************************/
+
+
 
 			})
 				let clickNodes = document.getElementsByClassName("clickable")
@@ -244,6 +285,7 @@ function handleZoom(e) {
 				}
 			copymmd = sourcemmd
 		}
+		createTooltip();
 	}
     </script>
 </body>

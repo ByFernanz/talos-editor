@@ -89,7 +89,7 @@
 }
 
 .editor-toolbar.fullscreen {
-    width: 100%;
+    width: 300%;
     height: 50px;
     padding-top: 10px;
     padding-bottom: 10px;
@@ -101,8 +101,9 @@
     left: 0;
     opacity: 1;
     z-index: 9;
-    border-bottom: 2px solid black;
+    border-bottom: 1px solid black;
     border-top: 1px solid black;
+    box-shadow: 0 0 7px 0 black;
 }
 
 .editor-toolbar.fullscreen::before {
@@ -238,7 +239,8 @@
     padding: 8px 10px;
     font-size: 12px;
     color: #959694;
-    text-align: right;
+    text-align: left;
+    display: inline-block;
 }
 
 .EasyMDEContainer.sided--no-fullscreen .editor-statusbar {
@@ -287,7 +289,7 @@
     width: 50%;
     top: 50px;
     right: 0;
-    z-index: 9;
+    /*z-index: 9;*/
     overflow: none;
     display: none;
     box-sizing: border-box;
@@ -664,7 +666,10 @@ font-family: 'Open Sans';
     padding-top: 0.5em;
     font-size: 12px;
     /*color: green;*/
-    text-align: right;
     font-weight: 600;
-    float: right;
+}
+
+.tippy-box[data-theme~="translucent"]{
+    font-family: 'Open Sans';
+    font-size: 1.2em;
 }

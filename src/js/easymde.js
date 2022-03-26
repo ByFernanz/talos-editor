@@ -21,6 +21,7 @@ require('codemirror/mode/gfm/gfm.js');
 require('codemirror/mode/xml/xml.js');
 var CodeMirrorSpellChecker = require('codemirror-spell-checker');
 var marked = require('marked').marked;
+var graphPreview;
 
 
 // Some variables
@@ -1121,7 +1122,7 @@ function toggleSideBySide(editor) {
         toolbar.className = toolbar.className.replace(/\s*active\s*/g, '');
         toolbar_div.className = toolbar_div.className.replace(/\s*disabled-for-preview*/g, '');
     }
-
+    graphPreview = preview;
     var sideBySideRenderingFunction = function () {
         cMDtoMMD(preview, true);
         /*var newValue = editor.options.previewRender(editor.value(), preview);
@@ -1149,8 +1150,8 @@ function toggleSideBySide(editor) {
     cm.refresh();
 }
 
-function saveSvg() {
-    name = "captura.svg"
+function saveSvg(name) {
+    name = name + ".svg"
     var svgEl = document.getElementById('graph-div'); 
     svgEl.setAttribute("xmlns", "http://www.w3.org/2000/svg");
     var svgData = svgEl.outerHTML;
@@ -1171,7 +1172,7 @@ function toggleCapture(){
 
 function aboutInfo(){
     Swal.fire({
-        title: '<strong>Talos Editor 1.4.0</strong>',
+        title: '<strong>Talos Editor 1.5.0</strong>',
         type: 'info',
         html:
           'Entorno de desarrollo de librojuegos, ' +
@@ -1184,9 +1185,57 @@ function aboutInfo(){
       })
 }
 
+function toIMG() {
+	let source = easyMDE.value();
+	let name = "diagrama";
+	let scale = 8; 
+	let output = "png";
+	let lines = source.split(/\n|\r\n/);
+	let yml = extractYAML(lines).ymlBlock;
+    yml = jsyaml.load(yml);
+	if (yml){
+		if (yml.title){
+			name = yml.title;
+		}
+		if (yml.dia_scale){
+			scale = yml.dia_scale;
+		}
+		if (yml.dia_output){
+			output = yml.dia_output;
+		}
+	}
+	if (output == "png"){
+    let element = document.getElementsByClassName("editor-preview-side")[0];
+    html2canvas(element, {useCORS: true, scale: scale}).then(function(canvas) {
+      let img = new Image();
+      img.src = canvas.toDataURL('image/png');;
+      //element.append(img);
+      img.onload = function () {
+        console.log('SVG exportado a PNG.');
+        const link = document.createElement('a')
+  		link.href = img.src
+  		link.download = name + ".png"
+  		document.body.appendChild(link)
+  		link.click()
+  		document.body.removeChild(link)
+      };
+    });
+	} else if(output == "svg"){
+		saveSvg(name);
+	}
+  }
+
 function downloadCode(){
     let textToWrite=easyMDE.value();
     let fileNameToSaveAs="story.md";
+	let lines = textToWrite.split(/\n|\r\n/);
+	let yml = extractYAML(lines).ymlBlock;
+    yml = jsyaml.load(yml);
+    if (yml){
+        if(yml.title){
+            fileNameToSaveAs = yml.title + ".md";
+        }
+    }
     	var textFileAsBlob = new Blob([textToWrite], {type:'text/plain'}); 
     	var downloadLink = document.createElement("a");
     	downloadLink.download = fileNameToSaveAs;
@@ -1220,7 +1269,8 @@ function compileCode() {
           'Aceptar',
         width: '70%'
     })
-    let talosRev = new Talos(parseText(easyMDE.value()), $('#talos-compile'), {});
+    let source = easyMDE.value();
+    let talosRev = new Talos(parseText(source), $('#talos-compile'), {});
     talosRev.compile('review');
 }
 
@@ -1233,9 +1283,60 @@ function exportDoc() {
         confirmButtonText:
           'Aceptar',
         width: '70%'
-    })
-    let talosRev = new Talos(parseText(easyMDE.value()), $('#talos-compile'), {});
+    });
+    let source = easyMDE.value(); 
+    let talosRev = new Talos(parseText(source), $('#talos-compile'), {});
     talosRev.compile();
+    let lines = source.split(/\n|\r\n/);
+	let yml = extractYAML(lines).ymlBlock;
+    yml = jsyaml.load(yml);
+    if (yml){
+        if (yml.dia_book){
+            let name = "diagrama";
+            let scale = 8; 
+            let output = "png";
+            graph_book = graph_book.replace(/\(#.*?\)/gm, "");
+            let contGraph = document.createElement("div");
+            contGraph.id = "graph-book";
+            document.body.appendChild(contGraph);
+            let svgOut = document.createElement("div");
+            svgOut.id = "svg-out";
+            contGraph.appendChild(svgOut);
+            cMDtoMMD(svgOut, null, graph_book, function(){
+                if (yml){
+                    if (yml.title){
+                        name = yml.title;
+                    }
+                    if (yml.dia_scale){
+                        scale = yml.dia_scale;
+                    }
+                    if (yml.dia_output){
+                        output = yml.dia_output;
+                    }
+                }
+                if (output == "png"){
+                    let element = contGraph;
+                    html2canvas(element, {useCORS: true, scale: scale}).then(function(canvas) {
+                        let img = new Image();
+                        img.src = canvas.toDataURL('image/png');
+                        img.onload = function () {
+                            console.log('SVG exportado a PNG.');
+                            const link = document.createElement('a')
+                              link.href = img.src
+                              link.download = name + ".png"
+                              document.body.appendChild(link)
+                              link.click()
+                              document.body.removeChild(link)
+                            $("#graph-book").remove();
+                            cMDtoMMD(graphPreview);
+                        }
+                    });
+                } else if(output == "svg"){
+                    saveSvg(name);
+                }
+            });
+        }
+    }
 }
 /**
  * Preview action.
@@ -1897,7 +1998,7 @@ var toolbarBuiltInButtons = {
   },
     "capture": {
         name: "capture",
-        action: toggleCapture,
+        action: toIMG,
         className: "fa fa-camera no-mobile",
         title: "Capturar diagrama",
         noMobile: true,
@@ -2421,7 +2522,7 @@ EasyMDE.prototype.render = function (el) {
     CodeMirror.defineMode("talos", function() {
     return {/*from   w w  w .  ja  va 2 s . co  m*/
         token: function(stream,state) {
-            if (stream.match(/(false|true|docx|html|pdf|epub)/)){
+            if (stream.match(/(false|true|docx|html|pdf|epub|png|svg)/)){
                 return "reserved";
             }
             else if (stream.match(stream.sol() && /^#\s[a-z][a-z_0-9]*\s{0,1}(.*)$/m) ) {
@@ -2444,7 +2545,7 @@ EasyMDE.prototype.render = function (el) {
                 return "blocksection";
             }else if (stream.sol() && stream.match(/^(\-|\*|\+)\s/m) ) {
                 return "list";
-            }else if (stream.sol() && stream.match(/^(\-\-\-|\.\.\.)$/m) ) {
+            }else if (stream.sol() && stream.match(/^(\-{3,}|\.{3,})$/m) ) {
                 return "ymlblock";
             }else if (stream.sol() && stream.match(/^[a-z][a-z_0-9]*\:\s/gm) ) {
                 return "ymlkey";
