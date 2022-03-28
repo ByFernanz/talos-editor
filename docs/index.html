@@ -8,7 +8,7 @@
     <title>Talos Editor</title>
 	<link rel="stylesheet" href="css/opensans.css">
     <link rel="stylesheet" href="css/easymde.min.css">
-    <link rel="stylesheet" href="css/font-awesome.min.css">
+	<link rel="stylesheet" href="css/all.min.css">
     <script src="js/easymde.min.js"></script>
     <script src="js/mermaid.min.js"></script>
     <script src="js/html2canvas.min.js"></script>
@@ -72,6 +72,26 @@ Por supuesto, algunas secciones que no pertenecen al librojuego como esta tambi√
     <script>
     var status = false;
 	var tippyInst = [];
+	var shapes = {
+		"circle": {
+			"left": "((",
+			"right": "))"
+		},
+		"round": {
+			"left": "(",
+			"right": ")"
+		},
+		"diamond":  {
+			"left": "{",
+			"right": "}"
+		},
+		"hexagon":  {
+			"left": "{{",
+			"right": "}}"
+		},
+	}
+	
+	var	classes = {};
     var toolbar = ["preview","new-file", "upload-code", "download-code", "compile", "export", "find", "undo", "redo"];
     if (!($(window).width() < 480 || $(window).height() < 480)) {
     		status = ["words", "lines"]
@@ -203,7 +223,99 @@ function handleZoom(e) {
 }
 	   /*****************************************************/
         function cMDtoMMD (elpreview, htmlLabels = true, sourcefile = easyMDE.value(), callback = null){
-        sourcemmd="graph TD\nclassDef sub fill:#fdc\n";
+		var listC = {} //lista de clases asignadas
+        sourcemmd=`
+			graph TD\n
+			classDef sub fill:#fdc\n`;
+		classes = {
+			deadly:	{
+				name: "deadly",
+				fill: "yellow",
+				stroke: "white",
+				stroke_width: "2px",
+				//stroke_dasharray: "5, 5",
+				//content: "fill:yellow,stroke:darkred,stroke-width:2px,stroke-dasharray: 5, 5",
+				icon: "skull",
+				shape: "round"
+			},
+			final: {
+				name: "final",
+				fill: "#6eff99",
+				stroke: "black",
+				//stroke_width: "2px",
+				//content: "fill:#6eff99,stroke:black,stroke-width:2px",
+				icon: "trophy",
+				shape: "round"
+			},
+			fight: {
+				name: "fight",
+				fill: "#ffbc76",
+				stroke: "black",
+				stroke_width: "2px",
+				stroke_dasharray: "5, 5",
+				//content: "fill:#ffbc76,stroke:black,stroke-width:2px,stroke-dasharray: 5, 5",
+				icon: "person-rifle",
+				shape: "circle"
+			},
+			treasure: {
+				name: "treasure",
+				fill: "#ed85ff",
+				stroke: "black",
+				stroke_width: "2px",
+				stroke_dasharray: "5, 5",
+				//content: "fill:#ed85ff,stroke:black,stroke-width:2px,stroke-dasharray: 5, 5",
+				icon: "gem",
+				shape: "circle"
+			},
+		}
+		let defClass = extractClass(easyMDE.value().split("\n"));
+		for (def of defClass){
+				def = jsyaml.load(def);
+				if(def){
+					if(!classes[def.name]){
+						classes[def.name] = {};
+					}
+					Object.assign(classes[def.name], def);
+				}
+		}
+		if(Object.keys(classes).length){
+			for(eli in classes){
+				var buildClass="";
+				var clase = eli;
+				if (classes.hasOwnProperty(clase)){
+					buildClass=""
+				if (classes[clase].hasOwnProperty("fill")){
+					buildClass += "fill:" + classes[clase].fill +","
+				}
+				if (classes[clase].hasOwnProperty("stroke")){
+					buildClass += "stroke:" + classes[clase].stroke +","
+				}
+				if (classes[clase].hasOwnProperty("stroke_width")){
+					buildClass += "stroke-width:" + classes[clase].stroke_width +","
+				}
+				if (classes[clase].hasOwnProperty("stroke_dasharray")){
+					buildClass += "stroke-dasharray:" + classes[clase].stroke_width +","
+				}
+				buildClass = buildClass.slice(0, -1);
+			}
+				sourcemmd+="classDef " + classes[eli].name + " " + buildClass + "\n";
+		}
+			let col = parseText(easyMDE.value())
+			for (el of col.blocks){
+				if (el.type == "fixed" || el.type == "normal"){
+					let proc = extractYAML(el.lines);
+					let yaml = jsyaml.load(proc.ymlBlock);
+					if (yaml){
+						if(yaml.class){
+							listC[el.name] = yaml.class
+						}
+						else{
+							listC[el.name] = null
+						}
+					}
+				}
+			}
+		}
 		//let sourcefile=easyMDE.value();
 		lines = sourcefile.split('\n');
 		let heading = /^#\s([a-z_0-9]*)(\s|$)/gm;
@@ -233,8 +345,25 @@ function handleZoom(e) {
 					if (subgraph.enabled){
 						subgraph.nodes.push(currentH);
 					}
-					sourcemmd += currentH + "(" + currentH + ")\n";
-					sourcemmd += "class " + currentH + " clickable\n"
+					let ic = ""; //icono
+					if(listC.hasOwnProperty(currentH) && classes.hasOwnProperty(listC[currentH])){
+						let ctemp = listC[currentH]
+						ic = "<i class='fa-solid fa-" + classes[ctemp].icon + "'></i> ";
+					}
+					let shap_left = "(";
+					let shap_right = ")";
+					if(listC.hasOwnProperty(currentH) && classes.hasOwnProperty(listC[currentH])){
+						if(shapes.hasOwnProperty(classes[listC[currentH]].shape)){
+							shap_left = shapes[classes[listC[currentH]].shape].left;
+							shap_right = shapes[classes[listC[currentH]].shape].right;
+						}
+					}
+					sourcemmd += currentH + shap_left + ic + currentH + shap_right +"\n";
+					sourcemmd += "class " + currentH + " clickable\n";
+					var classed = "";
+					if(listC.hasOwnProperty(currentH)){
+						sourcemmd += "class " + currentH + " " + listC[currentH] +"\n";
+					}
 					if (currentH.match(regexLib.normal)) {
 						//sourcemmd += "class " + currentH + " normal\n"
 						sourcemmd += "style " + currentH + " fill:#c7c7ff\n"
@@ -276,12 +405,16 @@ function handleZoom(e) {
 
 			})
 				let clickNodes = document.getElementsByClassName("clickable")
-				for (el of clickNodes) {
-					el.lastChild.addEventListener('click', function(element){
+				for (ele of clickNodes) {
+					/*el.lastChild.addEventListener('click', function(element){
 						let head = "# " + element.srcElement.innerText;
  						let ln = lines.findIndex(element => element.includes(head))
-						jumpToLine(ln)
-					})
+						jumpToLine(ln)*/
+						let head = "# " + ele.id.match(/flowchart-(.*?)-(.*?)/)[1];
+						ele.addEventListener('click', function(){
+ 							let ln = lines.findIndex(eleme => eleme.includes(head))
+							jumpToLine(ln)
+						})
 				}
 			copymmd = sourcemmd
 		}

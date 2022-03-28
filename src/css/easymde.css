@@ -508,6 +508,9 @@ span[data-img-src]::after {
     color: darkred;
     font-weight: bold;
 }
+.cm-class {
+    color: #00b100;
+}
 
 rect {
     stroke: #000;
@@ -515,8 +518,8 @@ rect {
 }
 
 #graph-div .node rect, #graph-div .node circle, #graph-div .node ellipse, #graph-div .node polygon, #graph-div .node path {
-    stroke: #000!important;
-    stroke-width: 2px!important;
+    stroke: #000;
+    stroke-width: 2px;
 }
 
 .clickable:hover .label{
@@ -526,6 +529,9 @@ rect {
 
 #talos-info{
     font-family: monospace;
+}
+.clickable:hover {
+    fill: white!important;
 }
 
 .clickable:hover rect{

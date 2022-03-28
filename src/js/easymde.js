@@ -1172,7 +1172,7 @@ function toggleCapture(){
 
 function aboutInfo(){
     Swal.fire({
-        title: '<strong>Talos Editor 1.5.0</strong>',
+        title: '<strong>Talos Editor 1.6.0</strong>',
         type: 'info',
         html:
           'Entorno de desarrollo de librojuegos, ' +
@@ -1303,7 +1303,7 @@ function exportDoc() {
             svgOut.id = "svg-out";
             contGraph.appendChild(svgOut);
             cMDtoMMD(svgOut, null, graph_book, function(){
-                if (yml){
+                if (typeof yml !== 'undefined'){
                     if (yml.title){
                         name = yml.title;
                     }
@@ -1789,7 +1789,7 @@ var toolbarBuiltInButtons = {
     'heading-1a': {
         name: 'heading-1a no-mobile',
         action: toggleHeading1,
-        className: 'fa fa-slack',
+        className: 'fa-solid fa-hashtag',
         title: 'Crear/quitar sección',
         noMobile: true,
     },
@@ -1894,7 +1894,7 @@ var toolbarBuiltInButtons = {
     'side-by-side': {
         name: 'side-by-side',
         action: toggleSideBySide,
-        className: 'fa fa-columns',
+        className: 'fa-solid fa-sitemap',
         noDisable: true,
         noMobile: true,
         title: 'Diagrama de flujo',
@@ -1933,7 +1933,7 @@ var toolbarBuiltInButtons = {
     'redo': {
         name: 'redo',
         action: redo,
-        className: 'fa fa-repeat fa-redo',
+        className: 'fa fa-redo',
         noDisable: true,
         title: 'Rehacer',
     },
@@ -2543,6 +2543,8 @@ EasyMDE.prototype.render = function (el) {
                 return "comment";
              }else if (stream.sol() && stream.match(/^(\:{3,}).*/m) ) {
                 return "blocksection";
+            }else if (stream.sol() && stream.match(/^(\={3,}).*/m) ) {
+                return "ymlblock";
             }else if (stream.sol() && stream.match(/^(\-|\*|\+)\s/m) ) {
                 return "list";
             }else if (stream.sol() && stream.match(/^(\-{3,}|\.{3,})$/m) ) {
